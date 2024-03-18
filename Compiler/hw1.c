@@ -3,8 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define _CRT_SECURE_NO_WARNINGS
-#define FILE_NAME "testdata1.txt"
+#define FILE_NAME "testdata2.txt"
 #define STsize 1000		// size of string table
 #define HTsize 100		// size of hash table
 #define isLetter(x) (((x) >= 'a' && (x) <= 'z') || ((x) >= 'A' && (x) <= 'Z') || x == '_')
@@ -19,7 +18,7 @@ typedef struct HTentry {
 enum errorTypes { noerror, illsp, illid, overst };
 typedef enum errorTypes ERRORtypes;
 
-char separators[] = ".,;:?!\t\n";
+char separators[] = " .,;:?!\t\n";
 
 HTpointer HT[HTsize];
 char ST[STsize];
@@ -73,7 +72,6 @@ void PrintError(ERRORtypes err) {
 		printf("...Error...		OVERFLOW ");
 		PrintHStable();
 		exit(0);
-		break;
 	case illsp:
 		printf("...Error...		%c is illegal separator \n", input);
 		break;
@@ -122,7 +120,7 @@ void PrintHeading() {
 // ReadIO
 void ReadID() {
 	nextid = nextfree;
-	if (isDigit(nextid)) {
+	if (isDigit(input)) {
 		err = illid;
 		PrintError(err);
 	}
@@ -136,8 +134,6 @@ void ReadID() {
 			input = fgetc(fp);
 		}
 	}
-
-
 }
 
 // ComputeHS
@@ -172,17 +168,17 @@ void LookupHS(int nid, int hscode) {
 					j++;
 				}
 			}
-			here = here->next;  
+            if (found) break;
+			here = here->next;
 		}
 	}
-
 }
 
 // ADDHT
 void ADDHT(int hscode) {
 	HTpointer ptr;
 
-	ptr = (HTpointer)malloc(sizeof(ptr));
+	ptr = (HTpointer)malloc(sizeof(HTentry));
 	ptr->index = nextid;
 	ptr->next = HT[hscode];
 	HT[hscode] = ptr;
@@ -212,7 +208,7 @@ int main() {
 				for (i = nextid; i < nextfree - 1; i++) {
 					printf("%c", ST[i]);
 				}
-				printf("	(entered)\n");
+				printf("        (entered)\n");
 				ADDHT(hashcode);
 			}
 			else {
