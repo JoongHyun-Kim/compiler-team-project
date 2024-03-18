@@ -3,7 +3,8 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define FILE_NAME "testdata.txt"
+#define _CRT_SECURE_NO_WARNINGS
+#define FILE_NAME "testdata1.txt"
 #define STsize 1000		// size of string table
 #define HTsize 100		// size of hash table
 #define isLetter(x) (((x) >= 'a' && (x) <= 'z') || ((x) >= 'A' && (x) <= 'Z') || x == '_')
@@ -42,9 +43,57 @@ void initialize() {
 	input = fgetc(fp);
 }
 
+// Print HStable
+void PrintHStable() {
+	int i, j;
+	HTpointer here;
+
+	printf("\n\n\n\n\n [[ HASH TABLE ]] \n\n");
+
+	for (i = 0; i < HTsize; i++) {
+		if (HT[i] != NULL) {
+			printf(" Hash Code %3d : ", i);
+			for (here = HT[i]; here != NULL; here = here->next) {
+				j = here->index;
+				while (ST[j] != '\0' && j < STsize)
+					printf("%c", ST[j++]);
+				printf("    ");
+			}
+			printf("\n");
+		}
+
+	}
+	printf("\n\n\n < %5d characters are used in the string table > \n", nextfree);
+}
+
+// PrintError
+void PrintError(ERRORtypes err) {
+	switch (err) {
+	case overst:
+		printf("...Error...		OVERFLOW ");
+		PrintHStable();
+		exit(0);
+		break;
+	case illsp:
+		printf("...Error...		%c is illegal separator \n", input);
+		break;
+	case illid:
+		printf("...Error...");
+
+		while (input != EOF && (isLetter(input) || isDigit(input))) {
+			printf("%c", input);
+			input = fgetc(fp);
+		}
+		printf(" 	start with digit \n");
+		break;
+	}
+}
+
 // separator check
 bool isSeparator(char input) {
-	for (int i = 0; i < strlen(separators); i++) {
+	int i;
+	int sep_len = strlen(separators);
+	for (i = 0; i < sep_len; i++) {
 		if (input == separators[i]) {
 			return true;
 		}
@@ -69,52 +118,6 @@ void PrintHeading() {
 	printf("--------------       ------------\n");
 }
 
-// Print HStable
-void PrintHStable() {
-	int i, j;
-	HTpointer here;
-
-	printf("\n\n\n\n\n [[ HASH TABLE ]] \n\n");
-
-	for (i = 0; i < HTsize; i++) {
-		if (HT[i] != NULL) {
-			printf(" Hash Code %3d : ", i);
-			for (here = HT[i]; here != NULL; here = here->next) {
-				j = here->index;
-				while (ST[j] != '\0' && j < STsize)
-					printf("%c", ST[j++]);
-				printf("    ");
-			}
-			printf("\n");
-		}
-
-	}
-
-	printf("\n\n\n < %5d characters are used in the string table > \n", nextfree);
-
-}
-
-// PrintError
-void PrintError(ERRORtypes err) {
-	switch (err) {
-	case overst:
-		printf("...Error...		OVERFLOW ");
-		PrintHStable();
-		exit(0);
-		break;
-	case illsp:
-		printf("...Error...		%c is illegal separator \n", input);
-	case illid:
-		printf("...Error...");
-
-		while (input != EOF && (isLetter(input) || isDigit(input))) {
-			printf("%c", input);
-			input = fgetc(fp);
-		}
-		printf(" 	start with digit \n");
-		break;
-	}
-}
 
 // ReadIO
 void ReadID() {
@@ -125,7 +128,7 @@ void ReadID() {
 	}
 	else {
 		while (input != EOF && (isLetter(input) || isDigit(input))) {
-			if (nextfree = STsize) {
+			if (nextfree == STsize) {
 				err = overst;
 				PrintError(err);
 			}
@@ -151,7 +154,7 @@ void ComputeHS(int nid, int nfree) {
 void LookupHS(int nid, int hscode) {
 	HTpointer here;
 	int i, j;
-	
+
 	found = false;
 	if (HT[hscode] != NULL) {
 		here = HT[hscode];
@@ -169,7 +172,7 @@ void LookupHS(int nid, int hscode) {
 					j++;
 				}
 			}
-			here = here->next;  // linked listÀÇ ´ÙÀ½ identifier·Î ÀÌµ¿
+			here = here->next;  
 		}
 	}
 
@@ -179,7 +182,7 @@ void LookupHS(int nid, int hscode) {
 void ADDHT(int hscode) {
 	HTpointer ptr;
 
-	ptr = (HTpointer) malloc(sizeof(ptr));
+	ptr = (HTpointer)malloc(sizeof(ptr));
 	ptr->index = nextid;
 	ptr->next = HT[hscode];
 	HT[hscode] = ptr;
@@ -221,6 +224,7 @@ int main() {
 				nextfree = nextid;
 			}
 		}
-		PrintHStable();
 	}
+	PrintHStable();
+	printf("ê¹€ì¤‘í˜„/2076088, ê³½ì„œì§„/2076016, ê¹€ì„ ì˜/2071010, ì´ë‚˜í˜„/2076292");
 }
