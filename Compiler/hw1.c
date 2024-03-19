@@ -12,8 +12,8 @@ Assignment  : Compiler HW1
 #include <string.h>
 #include <stdbool.h>
 
-#define FILE_NAME "testdata1.txt"
-#define STsize 30        // size of string table
+#define FILE_NAME "testdata4.txt"
+#define STsize 1000        // size of string table
 #define HTsize 100        // size of hash table
 #define isLetter(x) (((x) >= 'a' && (x) <= 'z') || ((x) >= 'A' && (x) <= 'Z') || (x) == '_')
 #define isDigit(x) ((x) >= '0' && (x) <= '9')
@@ -66,9 +66,9 @@ bool isSeparator(char input) {
 }
 
 void PrintHeading() {
-    printf("--------------       ------------\n");
-    printf(" Index in ST           identifier \n");
-    printf("--------------       ------------\n");
+    printf("--------------      ------------\n");
+    printf(" Index in ST         identifier \n");
+    printf("--------------      ------------\n");
 }
 
 // Print HStable
@@ -100,40 +100,49 @@ void PrintError(ERRORtypes error) {
         case noerror:
             break;
         case overst:
-            printf("...Error...         OVERFLOW ");
+            printf("...Error...             OVERFLOW ");
             PrintHStable();
             exit(0);
             break;
         case illsp:    // illegal separator
-            printf("...Error...         %c is illegal separator \n", input);
+            printf("...Error...             %c is illegal separator\n", input);
             break;
         case illid:    // illegal identifier
-            printf("...Error...     ");
+            printf("...Error...             ");
             for(i = nextid; i < nextfree - 1; i++) {
                 printf("%c", ST[i]);
             }
-            printf("        start with digit \n");
+            for (int j = 0; j < 20-(nextfree-nextid); j++) {
+                printf(" ");
+            }
+            printf("start with digit\n");
             nextfree = nextid;
             break;
         case illic:
-            printf("...Error...     ");
+            printf("...Error...             ");
             char illic = '\0';
             for(i = nextid; i < nextfree - 1; i++) {
                 printf("%c", ST[i]);
+            }
+            for (int j = 0; j < 20-(nextfree-nextid); j++) {
+                printf(" ");
             }
             for (i = nextid; i < nextfree - 1; i++) {
                 if (!(isDigit(ST[i]) || isLetter(ST[i])))
                     illic = ST[i];
             }
-            printf("        %c Is not allowed \n", illic);
+            printf("%c Is not allowed\n", illic);
             nextfree = nextid;
             break;
         case overlen:
-            printf("...Error...     ");
+            printf("...Error...             ");
             for (i = nextid; i < nextfree - 1; i++) {
                 printf("%c", ST[i]);
             }
-            printf("        too long identifier \n");
+            for (int j = 0; j < 20-(nextfree-nextid); j++) {
+                printf(" ");
+            }
+            printf("too long identifier\n");
             nextfree = nextid;
             break;
     }
@@ -240,18 +249,27 @@ int main() {
             }
             else if (!found) {
                 printf("%6d        ", nextid);
+                printf("          ");
                 for (i = nextid; i < nextfree - 1; i++) {
                     printf("%c", ST[i]);
                 }
-                printf("       (entered)\n");
+                for (int j = 0; j < 20-(nextfree-nextid); j++) {
+                    printf(" ");
+                }
+                printf("(entered)\n");
+                //printf("         (entered)\n");
                 ADDHT(hashcode);
             }
             else {
-                printf("%6d              ", sameid);
+                printf("%6d        ", sameid);
+                printf("          ");
                 for (i = nextid; i < nextfree - 1; i++) {
                     printf("%c", ST[i]);
                 }
-                printf("       (already existed)\n");
+                for (int j = 0; j < 20-(nextfree-nextid); j++) {
+                    printf(" ");
+                }
+                printf("(already existed)\n");
                 nextfree = nextid;
             }
         }
