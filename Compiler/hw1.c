@@ -237,7 +237,6 @@ int main() {
                 error = overst;
                 PrintError(error);
             }
-            ST[nextfree++] = '\0';
             ComputeHS(nextid, nextfree);
             LookupHS(nextid, hashcode);
 
