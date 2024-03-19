@@ -5,7 +5,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#define FILE_NAME "testdata3.txt"
+#define FILE_NAME "testdata6.txt"
 #define STsize 1000        // size of string table
 #define HTsize 100        // size of hash table
 #define isLetter(x) (((x) >= 'a' && (x) <= 'z') || ((x) >= 'A' && (x) <= 'Z') || (x) == '_')
@@ -113,7 +113,7 @@ void PrintError(ERRORtypes error) {
             } else {
                 char illic = input;
                 int i;
-                for(i = nextid; i < nextfree - 1; i++) {
+                for(i = nextid; i < nextfree; i++) {
                     printf("%c", ST[i]);
                 }
                 while (input != EOF && (isLetter(input) || isDigit(input))) {
@@ -232,7 +232,7 @@ int main() {
         error = noerror;
         SkipSeparators();
         ReadID();
-        if (input != EOF && error != illid && error != overlen && error != illsp) {
+        if (input != EOF && error == noerror) {
             if (nextfree == STsize) {
                 error = overst;
                 PrintError(error);
@@ -241,7 +241,7 @@ int main() {
             ComputeHS(nextid, nextfree);
             LookupHS(nextid, hashcode);
 
-            if (!found) {
+            if (!found) {   // add to hashtable
                 printf("%6d     ", nextid);
                 for (i = nextid; i < nextfree - 1; i++) {
                     printf("%c", ST[i]);
@@ -260,6 +260,19 @@ int main() {
             
         }
         SkipSeparators();
+    }
+    // 마지막 문자 출력용 스파게티코드...
+    if (nextid < nextfree) {
+        ComputeHS(nextid, nextfree);
+        LookupHS(nextid, hashcode);
+        if (!found) {
+            printf("%6d     ", nextid);
+            for (i = nextid; i < nextfree - 1; i++) {
+                printf("%c", ST[i]);
+            }
+            printf("    (entered)\n");
+            ADDHT(hashcode);
+        }
     }
     PrintHStable();
     printf("김중현/2076088, 곽서진/2076016, 김선영/2071010, 이나현/2076292");
