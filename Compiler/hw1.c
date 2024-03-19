@@ -5,7 +5,7 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#define FILE_NAME "testdata6.txt"
+#define FILE_NAME "testdata1.txt"
 #define STsize 1000        // size of string table
 #define HTsize 100        // size of hash table
 #define isLetter(x) (((x) >= 'a' && (x) <= 'z') || ((x) >= 'A' && (x) <= 'Z') || (x) == '_')
@@ -17,7 +17,7 @@ typedef struct HTentry {
     HTpointer next;    // pointer to next identifier
 } HTentry;
 
-enum errorTypes { noerror, illsp, illid, overst, overlen };
+enum errorTypes { noerror, illsp, illid, illic, overst, overlen };
 typedef enum errorTypes ERRORtypes;
 
 char separators[] = " .,;:?!\t\n";
@@ -82,15 +82,13 @@ void PrintHStable() {
             }
             printf("\n");
         }
-
     }
-
     printf("\n\n\n < %5d characters are used in the string table > \n", nextfree);
-
 }
 
 // PrintError
 void PrintError(ERRORtypes error) {
+    int i;
     switch (error) {
         case noerror:
             break;
@@ -104,33 +102,32 @@ void PrintError(ERRORtypes error) {
             break;
         case illid:    // illegal identifier
             printf("...Error...     ");
-            if(isDigit(input)) {
-                while (input != EOF && (isLetter(input) || isDigit(input))) {
-                    printf("%c", input);
-                    input = fgetc(fp);
-                }
-                printf("        start with digit \n");
-            } else {
-                char illic = input;
-                int i;
-                for(i = nextid; i < nextfree; i++) {
-                    printf("%c", ST[i]);
-                }
-                while (input != EOF && (isLetter(input) || isDigit(input))) {
-                    printf("%c", input);
-                    input = fgetc(fp);
-                }
-                printf("        %c Is not allowed \n", illic);
+            for(i = nextid; i < nextfree - 1; i++) {
+                printf("%c", ST[i]);
             }
+            printf("        start with digit \n");
+            nextfree = nextid;
+            break;
+        case illic:
+            printf("...Error...     ");
+            char illic = '\0';
+            for(i = nextid; i < nextfree - 1; i++) {
+                printf("%c", ST[i]);
+            }
+            for (i = nextid; i < nextfree - 1; i++) {
+                if (!(isDigit(ST[i]) || isLetter(ST[i])))
+                    illic = ST[i];
+            }
+            printf("        %c Is not allowed \n", illic);
             nextfree = nextid;
             break;
         case overlen:
             printf("...Error...     ");
-            int j;
-            for (j = nextid; j < nextfree; j++) {
-                printf("%c", ST[j]);
+            for (i = nextid; i < nextfree - 1; i++) {
+                printf("%c", ST[i]);
             }
             printf("        too long identifier \n");
+            nextfree = nextid;
             break;
     }
 }
@@ -151,29 +148,20 @@ void ReadID() {
     nextid = nextfree;
     if (isDigit(input)) {
         error = illid;
-        PrintError(error);
     }
-    else {
-        while (input != EOF && !isSeparator(input)) {
-            if (nextfree == STsize) {
-                error = overst;
-                PrintError(error);
-            }
-            if(!(isLetter(input) || isDigit(input))){
-                error = illid;
-                PrintError(error);
-            }
-            if(nextfree - nextid < 12) {
-                ST[nextfree++] = input;
-            }
-            input = fgetc(fp);
-        }
-        if (nextfree - nextid > 11) {
-            error = overlen;
+    while (input != EOF && !isSeparator(input)) {
+        if (nextfree == STsize) {
+            error = overst;
             PrintError(error);
         }
-        ST[nextfree++] = '\0';
+        if(!(isLetter(input) || isDigit(input))){
+            error = illic;
+        }
+        ST[nextfree++] = input;
+        input = fgetc(fp);
     }
+    ST[nextfree++] = '\0';
+    PrintError(error);
 }
 
 // ComputeHS
@@ -216,7 +204,7 @@ void LookupHS(int nid, int hscode) {
 // ADDHT
 void ADDHT(int hscode) {
     HTpointer ptr;
-
+    
     ptr = (HTpointer)malloc(sizeof(ptr));
     ptr->index = nextid;
     ptr->next = HT[hscode];
@@ -232,46 +220,35 @@ int main() {
         error = noerror;
         SkipSeparators();
         ReadID();
-        if (input != EOF && error == noerror) {
+        if (error != illid && error != illic) {
             if (nextfree == STsize) {
                 error = overst;
                 PrintError(error);
             }
             ComputeHS(nextid, nextfree);
             LookupHS(nextid, hashcode);
-
-            if (!found) {   // add to hashtable
-                printf("%6d     ", nextid);
+            if (nextfree - nextid > 11) {
+                error = overlen;
+                PrintError(overlen);
+            }
+            else if (!found) {
+                printf("%6d        ", nextid);
                 for (i = nextid; i < nextfree - 1; i++) {
                     printf("%c", ST[i]);
                 }
-                printf("    (entered)\n");
+                printf("       (entered)\n");
                 ADDHT(hashcode);
             }
             else {
-                printf("%6d     ", sameid);
+                printf("%6d              ", sameid);
                 for (i = nextid; i < nextfree - 1; i++) {
                     printf("%c", ST[i]);
                 }
-                printf("    (already existed)\n");
+                printf("       (already existed)\n");
                 nextfree = nextid;
             }
-            
         }
         SkipSeparators();
-    }
-    // 마지막 문자 출력용 스파게티코드...
-    if (nextid < nextfree) {
-        ComputeHS(nextid, nextfree);
-        LookupHS(nextid, hashcode);
-        if (!found) {
-            printf("%6d     ", nextid);
-            for (i = nextid; i < nextfree - 1; i++) {
-                printf("%c", ST[i]);
-            }
-            printf("    (entered)\n");
-            ADDHT(hashcode);
-        }
     }
     PrintHStable();
     printf("김중현/2076088, 곽서진/2076016, 김선영/2071010, 이나현/2076292");
