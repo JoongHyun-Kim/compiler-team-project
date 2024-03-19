@@ -1,12 +1,19 @@
+/**************************************************************************************
+Hashtable Implementation Program
+
+Contributors : 김중현/2076088, 곽서진/2076016, 김선영/2071010, 이나현/2076292
+Date: 03/20/2024
+Assignment  : Compiler HW1
+
+***************************************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 
-#define _CRT_SECURE_NO_WARNINGS
-
 #define FILE_NAME "testdata1.txt"
-#define STsize 1000        // size of string table
+#define STsize 30        // size of string table
 #define HTsize 100        // size of hash table
 #define isLetter(x) (((x) >= 'a' && (x) <= 'z') || ((x) >= 'A' && (x) <= 'Z') || (x) == '_')
 #define isDigit(x) ((x) >= '0' && (x) <= '9')
@@ -204,7 +211,7 @@ void LookupHS(int nid, int hscode) {
 // ADDHT
 void ADDHT(int hscode) {
     HTpointer ptr;
-    
+
     ptr = (HTpointer)malloc(sizeof(ptr));
     ptr->index = nextid;
     ptr->next = HT[hscode];
@@ -227,7 +234,7 @@ int main() {
             }
             ComputeHS(nextid, nextfree);
             LookupHS(nextid, hashcode);
-            if (nextfree - nextid > 11) {
+            if (nextfree - nextid > 13) {
                 error = overlen;
                 PrintError(overlen);
             }
