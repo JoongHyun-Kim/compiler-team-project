@@ -2,26 +2,18 @@
 
 HTpointer HT[HTsize];
 char ST[STsize];
-int hashcode = 0;
-int sameid = 0;
+hashcode = 0;
+sameid = 0;
 bool found = false;
+nextid = 0;
+nextfree = 0;
 
-// 해시 테이블을 출력하는 함수
-void PrintHStable() {
-    int i, j;
-    HTpointer here; // 현재 노드를 가리킬 포인터
-
-    for (i = 0; i < HTsize; i++) {
-        if (HT[i] != NULL) { // 노드가 존재하면
-            for (here = HT[i]; here != NULL; here = here->next) { // 연결 리스트의 모든 노드 방문
-                j = here->index; // 현재 노드의 identifier 시작 인덱스
-                while (ST[j] != '\0' && j < STsize)
-                    printf("%c", ST[j++]); // identifier 문자 하나씩 출력
-                printf("    ");
-            }
-            printf("\n");
-        }
+void ReadID(char *ident) {
+    nextid = nextfree;
+    for (int i = 0; i < strlen(ident); i++) {
+        ST[nextfree++] = ident[i];
     }
+    ST[nextfree++] = '\0';
 }
 
 // Hashcode를 계산하는 함수
@@ -71,9 +63,9 @@ void ADDHT(int hscode) {
     HT[hscode] = ptr; // 연결 리스트에 identifier 삽입
 }
 
-void SymbolTable() {
-    
+void SymbolTable(char* ident) {   
     ERRORtypes error;
+    ReadID(ident);
     if (nextfree == STsize) { // ST가 꽉 찬 경우
         error = overst; // overst(오버플로우)로 에러 지정
         ReportError(error);
@@ -81,30 +73,9 @@ void SymbolTable() {
     ComputeHS(nextid, nextfree); // 해시코드 계산
     LookupHS(nextid, hashcode); // 해시 테이블에서 identifier 조회
     if (!found) { // 해시 테이블에 동일한 identifier가 존재하지 않는 경우
-        printf("%6d        ", nextid); // identifier 인덱스 출력
-        printf("          "); // 정렬을 위한 공백
-        for (int i = nextid; i < nextfree - 1; i++) {
-            printf("%c", ST[i]); // identifier 출력
-        }
-        // 출력 정렬을 위해 공백 추가
-        // 최대 길이를 20글자로 가정하고, (20 - (nextfree - nextid)만큼 공백 추가
-        for (int j = 0; j < 20 - (nextfree - nextid); j++) {
-            printf(" ");
-        }
         ADDHT(hashcode); // 해시 테이블에 추가
     }
     else { // 해시 테이블에 identifier가 이미 존재하는 경우
-        printf("%6d        ", sameid); // 동일한 identifier의 인덱스 출력
-        printf("          "); // 정렬을 위한 공백
-        for (int i = nextid; i < nextfree - 1; i++) {
-            printf("%c", ST[i]); // identifier 출력
-        }
-        // 출력 정렬을 위해 공백 추가
-        // 최대 길이를 20글자로 가정하고, (20 - (nextfree - nextid)만큼 공백 추가
-        for (int j = 0; j < 20 - (nextfree - nextid); j++) {
-            printf(" ");
-        }
         nextfree = nextid; // 인덱스 초기화
     }
-    PrintHStable();
 }

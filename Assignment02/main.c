@@ -3,6 +3,8 @@
 #include "glob.h"
 #include "tn.h"
 
+int lineNum = 1;
+
 extern yylex();
 extern char* yytext;
 

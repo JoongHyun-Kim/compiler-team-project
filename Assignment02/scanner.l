@@ -4,7 +4,6 @@
 #include "tn.h"
 #include "glob.h"
 ERRORtypes error = noerror;
-int lineNum = 0;
 %}
 %%
 "const"	return(TCONST);
@@ -16,12 +15,21 @@ int lineNum = 0;
 "while"	return(TWHILE);
 "=="	return(TEQUAL);
 "!="	return(TNOTEQU);
+"<"	return(TLESS);
+">"	return(TGREAT);
 "<="	return(TLESSE);
 ">="	return(TGREATE);
+"!"	return(TNOT);
 "&&" 	return(TAND);
 "||" 	return(TOR);
 "++"	return(TINC);
 "--" 	return(TDEC);
+"+"	return(TADD);
+"-"	return(TSUB);
+"*"	return(TMUL);
+"/"	return(TDIV);
+"%"	return(TMOD);
+"="	return(TASSIGN);
 "+=" 	return(TADDASSIGN);
 "-=" 	return(TSUBASSIGN);
 "*=" 	return(TMULASSIGN);
@@ -42,7 +50,7 @@ int lineNum = 0;
 		return(TERROR);
 	}
 	else {
-		SymbolTable();
+		SymbolTable(yytext);
 		return(TIDENT);	
 	}
 }
