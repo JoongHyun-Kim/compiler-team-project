@@ -2,18 +2,20 @@
 
 HTpointer HT[HTsize];
 char ST[STsize];
-hashcode = 0;
-sameid = 0;
+int hashcode = 0;
+int sameid = 0;
 bool found = false;
-nextid = 0;
-nextfree = 0;
+int nextid = 0;
+int nextfree = 0;
+char* error_message;
 
+// Identifier를 읽는 함수
 void ReadID(char *ident) {
-    nextid = nextfree;
+    nextid = nextfree; // ident의 시작 index를 nextid에 저장
     for (int i = 0; i < strlen(ident); i++) {
-        ST[nextfree++] = ident[i];
+        ST[nextfree++] = ident[i]; // ident을 ST에 추가하고 다음 문자로 이동
     }
-    ST[nextfree++] = '\0';
+    ST[nextfree++] = '\0'; // 문자열의 끝을 나타내는 null 문자 추가
 }
 
 // Hashcode를 계산하는 함수
@@ -63,13 +65,10 @@ void ADDHT(int hscode) {
     HT[hscode] = ptr; // 연결 리스트에 identifier 삽입
 }
 
+
 void SymbolTable(char* ident) {   
-    ERRORtypes error;
+    ERRORtypes error = noerror;
     ReadID(ident);
-    if (nextfree == STsize) { // ST가 꽉 찬 경우
-        error = overst; // overst(오버플로우)로 에러 지정
-        ReportError(error);
-    }
     ComputeHS(nextid, nextfree); // 해시코드 계산
     LookupHS(nextid, hashcode); // 해시 테이블에서 identifier 조회
     if (!found) { // 해시 테이블에 동일한 identifier가 존재하지 않는 경우

@@ -41,8 +41,9 @@ ERRORtypes error = noerror;
 "}"	return(TRIGHTBRACE);
 "["	return(TLEFTBRACKET);
 "]"	return(TRIGHTBRACKET);
-","	return(TCOMMA);
 ";"  	return(TSEMICOLON);
+","	return(TCOMMA);
+"."	return(TDOT);
 [A-Za-z_][A-Za-z0-9_]* {
 	if(yyleng > 12) {
 		error = overlen;

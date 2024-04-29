@@ -1,10 +1,9 @@
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 #define STsize 1000 // 문자열 테이블 크기
 #define HTsize 100 // 해시 테이블 크기
-#define isLetter(x) (((x) >= 'a' && (x) <= 'z') || ((x) >= 'A' && (x) <= 'Z') || (x) == '_') // 문자 여부 확인
-#define isDigit(x) ((x) >= '0' && (x) <= '9') // 숫자 여부 확인
 
 typedef struct HTentry* HTpointer;
 typedef struct HTentry {
@@ -12,7 +11,7 @@ typedef struct HTentry {
     HTpointer next; // 다음 identifier를 가리키는 포인터
 } HTentry;
 
-enum errorTypes { noerror, illid, illic, overst, overlen }; // 에러 유형 enum으로 정의
+enum errorTypes { noerror, illid, illic, overlen }; // 에러 유형 enum으로 정의
 typedef enum errorTypes ERRORtypes;
 
 extern HTpointer HT[HTsize];
