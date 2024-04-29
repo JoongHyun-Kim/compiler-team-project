@@ -1,3 +1,9 @@
+/* 
+* main.c - 프로그램 메인 실행
+* contributors: 김중현, 곽서진, 이나현, 김선영
+* date: 04/30/2024
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "glob.h"
