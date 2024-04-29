@@ -70,7 +70,7 @@ void ADDHT(int hscode) {
     HT[hscode] = ptr; // 연결 리스트에 identifier 삽입
 }
 
-
+// 주어진 identifier를 처리해 심볼 테이블에 추가 또는 이미 존재하는지 확인
 void SymbolTable(char* ident) {   
     ReadID(ident);
     ComputeHS(nextid, nextfree); // 해시코드 계산
