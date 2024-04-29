@@ -1,30 +1,36 @@
+/* 
+* glob.h - í”„ë¡œê·¸ë¨ì— ì‚¬ìš©ëœ global variable ì •ì˜
+* contributors: ê¹€ì¤‘í˜„, ê³½ì„œì§„, ì´ë‚˜í˜„, ê¹€ì„ ì˜
+* date: 04/30/2024
+*/
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 
-#define STsize 1000 // ¹®ÀÚ¿­ Å×ÀÌºí Å©±â
-#define HTsize 100 // ÇØ½Ã Å×ÀÌºí Å©±â
+#define STsize 1000 // ë¬¸ìì—´ í…Œì´ë¸” í¬ê¸°
+#define HTsize 100 // í•´ì‹œ í…Œì´ë¸” í¬ê¸°
 
 typedef struct HTentry* HTpointer;
 typedef struct HTentry {
-    int index; // ST¿¡¼­ identifierÀÇ ÀÎµ¦½º
-    HTpointer next; // ´ÙÀ½ identifier¸¦ °¡¸®Å°´Â Æ÷ÀÎÅÍ
+    int index; // STì—ì„œ identifierì˜ ì¸ë±ìŠ¤
+    HTpointer next; // ë‹¤ìŒ identifierë¥¼ ê°€ë¦¬í‚¤ëŠ” í¬ì¸í„°
 } HTentry;
 
-enum errorTypes { noerror, illid, illic, overlen }; // ¿¡·¯ À¯Çü enumÀ¸·Î Á¤ÀÇ
+enum errorTypes { noerror, illid, illic, overlen }; // ì—ëŸ¬ ìœ í˜• enumìœ¼ë¡œ ì •ì˜
 typedef enum errorTypes ERRORtypes;
 
 extern HTpointer HT[HTsize];
 extern char ST[STsize];
 
-extern int nextid; // ÇöÀç identifier ÀÎµ¦½º
-extern int nextfree; // ST¿¡¼­ ´ÙÀ½ availableÇÑ ÀÎµ¦½º
+extern int nextid; // í˜„ì¬ identifier ì¸ë±ìŠ¤
+extern int nextfree; // STì—ì„œ ë‹¤ìŒ availableí•œ ì¸ë±ìŠ¤
 
-extern int hashcode; // identifierÀÇ ÇØ½ÃÄÚµå
-extern int sameid; // °°Àº ½Äº°ÀÚÀÇ Ã¹ ÀÎµ¦½º
+extern int hashcode; // identifierì˜ í•´ì‹œì½”ë“œ
+extern int sameid; // ê°™ì€ ì‹ë³„ìì˜ ì²« ì¸ë±ìŠ¤
 
-extern bool found;  // identifierÀÇ ÀÌÀü µîÀå ¿©ºÎ
+extern bool found;  // identifierì˜ ì´ì „ ë“±ì¥ ì—¬ë¶€
 
-extern int lineNum; // ÁÙ ¹øÈ£
-extern int cErrors; // ¿¡·¯ °³¼ö
-extern char *error_message; // ¿¡·¯ ¸Ş¼¼Áö
+extern int lineNum; // ì¤„ ë²ˆí˜¸
+extern int cErrors; // ì—ëŸ¬ ê°œìˆ˜
+extern char *error_message; // ì—ëŸ¬ ë©”ì„¸ì§€
