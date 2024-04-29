@@ -31,11 +31,11 @@ void PrintToken(enum tnumber tn) {
 	case TVOID: printf("%d			void						%s\n", lineNum, yytext); break;
 	case TWHILE: printf("%d			while						%s\n", lineNum, yytext); break;
 	case TEQUAL: printf("%d			equal						%s\n", lineNum, yytext); break;
-	case TNOTEQU: printf("%d			notequal						%s\n", lineNum, yytext); break;
+	case TNOTEQU: printf("%d			notequal					%s\n", lineNum, yytext); break;
 	case TLESS: printf("%d			less						%s\n", lineNum, yytext); break;
 	case TGREAT: printf("%d			greater						%s\n", lineNum, yytext); break;
-	case TLESSE: printf("%d			less_equal						%s\n", lineNum, yytext); break;
-	case TGREATE: printf("%d			greater_equal						%s\n", lineNum, yytext); break;
+	case TLESSE: printf("%d			less_equal					%s\n", lineNum, yytext); break;
+	case TGREATE: printf("%d			greater_equal					%s\n", lineNum, yytext); break;
 	case TAND: printf("%d			and						%s\n", lineNum, yytext); break;
 	case TOR: printf("%d			or						%s\n", lineNum, yytext); break;
 	case TINC: printf("%d			increase					%s\n", lineNum, yytext); break;
