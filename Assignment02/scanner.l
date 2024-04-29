@@ -68,7 +68,6 @@ ERRORtypes error = noerror;
 	ReportError(error, yytext);
 	return(TERROR);
 }
-"/*"([^*]|\*+[^*/])*\**"*/"	;
 "//".*	;
 "\n" 	{ lineNum++; }
 [ \t]	;
