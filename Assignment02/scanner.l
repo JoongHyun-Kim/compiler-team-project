@@ -1,4 +1,10 @@
 %{
+/*
+* scanner.l - MiniC 구문 분석기
+* contributors: 김중현, 곽서진, 이나현, 김선영
+* date: 04/30/2024
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "tn.h"
