@@ -46,10 +46,10 @@ void PrintToken(enum tnumber tn) {
 	case TDIV: printf("%d			div						%s\n", lineNum, yytext); break;
 	case TMOD: printf("%d			mod						%s\n", lineNum, yytext); break;
 	case TASSIGN: printf("%d			assign						%s\n", lineNum, yytext); break;
-	case TADDASSIGN: printf("%d			add_assign						%s\n", lineNum, yytext); break;
-	case TMULASSIGN: printf("%d			mul_assign						%s\n", lineNum, yytext); break;
-	case TDIVASSIGN: printf("%d			div_assign						%s\n", lineNum, yytext); break;
-	case TMODASSIGN: printf("%d			mod_assign						%s\n", lineNum, yytext); break;
+	case TADDASSIGN: printf("%d			add_assign					%s\n", lineNum, yytext); break;
+	case TMULASSIGN: printf("%d			mul_assign					%s\n", lineNum, yytext); break;
+	case TDIVASSIGN: printf("%d			div_assign					%s\n", lineNum, yytext); break;
+	case TMODASSIGN: printf("%d			mod_assign					%s\n", lineNum, yytext); break;
 	case TLEFTPARENTHESIS: printf("%d			left_parenthesis				%s\n", lineNum, yytext); break;
 	case TRIGHTPARENTHESIS: printf("%d			right_parenthesis				%s\n", lineNum, yytext); break;
 	case TLEFTBRACE: printf("%d			left_brace					%s\n", lineNum, yytext); break;
