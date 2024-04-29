@@ -1,3 +1,9 @@
+/*
+* symtable.c - Identifierë¥¼ ì½ê³  HTë¥¼ êµ¬ì„±
+* contributors: ê¹€ì¤‘í˜„, ê³½ì„œì§„, ì´ë‚˜í˜„, ê¹€ì„ ì˜
+* date: 04/30/2024
+*/
+
 #include "glob.h"
 
 HTpointer HT[HTsize];
@@ -8,71 +14,71 @@ bool found = false;
 int nextid = 0;
 int nextfree = 0;
 
-// Identifier¸¦ ÀĞ´Â ÇÔ¼ö
+// Identifierë¥¼ ì½ëŠ” í•¨ìˆ˜
 void ReadID(char *ident) {
-    nextid = nextfree; // identÀÇ ½ÃÀÛ index¸¦ nextid¿¡ ÀúÀå
+    nextid = nextfree; // identì˜ ì‹œì‘ indexë¥¼ nextidì— ì €ì¥
     for (int i = 0; i < strlen(ident); i++) {
-        ST[nextfree++] = ident[i]; // identÀ» ST¿¡ Ãß°¡ÇÏ°í ´ÙÀ½ ¹®ÀÚ·Î ÀÌµ¿
+        ST[nextfree++] = ident[i]; // identì„ STì— ì¶”ê°€í•˜ê³  ë‹¤ìŒ ë¬¸ìë¡œ ì´ë™
     }
-    ST[nextfree++] = '\0'; // ¹®ÀÚ¿­ÀÇ ³¡À» ³ªÅ¸³»´Â null ¹®ÀÚ Ãß°¡
+    ST[nextfree++] = '\0'; // ë¬¸ìì—´ì˜ ëì„ ë‚˜íƒ€ë‚´ëŠ” null ë¬¸ì ì¶”ê°€
 }
 
-// Hashcode¸¦ °è»êÇÏ´Â ÇÔ¼ö
+// Hashcodeë¥¼ ê³„ì‚°í•˜ëŠ” í•¨ìˆ˜
 void ComputeHS(int nid, int nfree) {
     int code, i;
     code = 0;
-    for (i = nid; i < nfree - 1; i++) { // nidºÎÅÍ nfree-1 ±îÁöÀÇ ¹®ÀÚ¿¡ ´ëÇØ
-        code += (int)ST[i]; // ¾Æ½ºÅ° ÄÚµå°ª ÇÕ
+    for (i = nid; i < nfree - 1; i++) { // nidë¶€í„° nfree-1 ê¹Œì§€ì˜ ë¬¸ìì— ëŒ€í•´
+        code += (int)ST[i]; // ì•„ìŠ¤í‚¤ ì½”ë“œê°’ í•©
     }
-    hashcode = code % HTsize; // ÇØ½ÃÄÚµå°ª °è»ê
+    hashcode = code % HTsize; // í•´ì‹œì½”ë“œê°’ ê³„ì‚°
 }
 
-// ÇØ½ÃÅ×ÀÌºí¿¡¼­ ÇöÀç ÀĞÀº identifier°¡ Á¸ÀçÇÏ´ÂÁö ÆÇ´ÜÇÏ´Â ÇÔ¼ö
+// í•´ì‹œí…Œì´ë¸”ì—ì„œ í˜„ì¬ ì½ì€ identifierê°€ ì¡´ì¬í•˜ëŠ”ì§€ íŒë‹¨í•˜ëŠ” í•¨ìˆ˜
 void LookupHS(int nid, int hscode) {
     HTpointer here;
     int i, j;
 
-    found = false; // ÃÊ±âÈ­
-    if (HT[hscode] != NULL) { // ÇØ½ÃÅ×ÀÌºíÀÇ ÇØ´ç ÇØ½ÃÄÚµå¿¡ °ªÀÌ ÀÖÀ¸¸é
-        here = HT[hscode]; // ÇØ´ç ÇØ½ÃÄÚµåÀÇ Ã¹ ¹øÂ° ³ëµå °¡Á®¿À±â
-        while (here != NULL && found == false) { // ¹®ÀÚ°¡ Á¸ÀçÇÏ°í identifier°¡ ¹ß°ßµÇÁö ¾ÊÀº °æ¿ì
+    found = false; // ì´ˆê¸°í™”
+    if (HT[hscode] != NULL) { // í•´ì‹œí…Œì´ë¸”ì˜ í•´ë‹¹ í•´ì‹œì½”ë“œì— ê°’ì´ ìˆìœ¼ë©´
+        here = HT[hscode]; // í•´ë‹¹ í•´ì‹œì½”ë“œì˜ ì²« ë²ˆì§¸ ë…¸ë“œ ê°€ì ¸ì˜¤ê¸°
+        while (here != NULL && found == false) { // ë¬¸ìê°€ ì¡´ì¬í•˜ê³  identifierê°€ ë°œê²¬ë˜ì§€ ì•Šì€ ê²½ìš°
             found = true;
-            i = here->index; // ÇöÀç ³ëµåÀÇ identifier ÀÎµ¦½º
-            j = nid; // ÀĞ°íÀÖ´Â identifierÀÇ ½ÃÀÛ ÀÎµ¦½º
-            sameid = i; // °°Àº identifier ÀÎµ¦½º ÀúÀå
+            i = here->index; // í˜„ì¬ ë…¸ë“œì˜ identifier ì¸ë±ìŠ¤
+            j = nid; // ì½ê³ ìˆëŠ” identifierì˜ ì‹œì‘ ì¸ë±ìŠ¤
+            sameid = i; // ê°™ì€ identifier ì¸ë±ìŠ¤ ì €ì¥
 
-            while (ST[i] != '\0' && ST[j] != '\0' && found == true) {   // ¹®ÀÚ¸¦ ºñ±³ÇÏ¸ç identifier ÀÏÄ¡ ¿©ºÎ ÆÇ´Ü
-                if (ST[i] != ST[j]) // ¹®ÀÚ°¡ ´Ù¸£¸é
+            while (ST[i] != '\0' && ST[j] != '\0' && found == true) {   // ë¬¸ìë¥¼ ë¹„êµí•˜ë©° identifier ì¼ì¹˜ ì—¬ë¶€ íŒë‹¨
+                if (ST[i] != ST[j]) // ë¬¸ìê°€ ë‹¤ë¥´ë©´
                     found = false;
-                else { // ´ÙÀ½ ¹®ÀÚ·Î ÀÌµ¿
+                else { // ë‹¤ìŒ ë¬¸ìë¡œ ì´ë™
                     i++;
                     j++;
                 }
             }
-            here = here->next;  // ¿¬°á ¸®½ºÆ®ÀÇ ´ÙÀ½ identifier·Î ÀÌµ¿
+            here = here->next;  // ì—°ê²° ë¦¬ìŠ¤íŠ¸ì˜ ë‹¤ìŒ identifierë¡œ ì´ë™
         }
     }
 }
 
-// ÇØ½Ã Å×ÀÌºí¿¡ identifier¸¦ Ãß°¡ÇÏ´Â ÇÔ¼ö
+// í•´ì‹œ í…Œì´ë¸”ì— identifierë¥¼ ì¶”ê°€í•˜ëŠ” í•¨ìˆ˜
 void ADDHT(int hscode) {
     HTpointer ptr;
 
-    ptr = (HTpointer)malloc(sizeof(ptr)); // »õ·Î¿î ³ëµå µ¿Àû ÇÒ´ç
-    ptr->index = nextid; // ÇöÀç identifierÀÇ ÀÎµ¦½º ¼³Á¤
-    ptr->next = HT[hscode]; // »õ ³ëµåÀÇ ´ÙÀ½ ³ëµå¸¦ ÇöÀç ÇØ½ÃÄÚµåÀÇ Ã¹ ¹øÂ° ³ëµå·Î ¼³Á¤
-    HT[hscode] = ptr; // ¿¬°á ¸®½ºÆ®¿¡ identifier »ğÀÔ
+    ptr = (HTpointer)malloc(sizeof(ptr)); // ìƒˆë¡œìš´ ë…¸ë“œ ë™ì  í• ë‹¹
+    ptr->index = nextid; // í˜„ì¬ identifierì˜ ì¸ë±ìŠ¤ ì„¤ì •
+    ptr->next = HT[hscode]; // ìƒˆ ë…¸ë“œì˜ ë‹¤ìŒ ë…¸ë“œë¥¼ í˜„ì¬ í•´ì‹œì½”ë“œì˜ ì²« ë²ˆì§¸ ë…¸ë“œë¡œ ì„¤ì •
+    HT[hscode] = ptr; // ì—°ê²° ë¦¬ìŠ¤íŠ¸ì— identifier ì‚½ì…
 }
 
 
 void SymbolTable(char* ident) {   
     ReadID(ident);
-    ComputeHS(nextid, nextfree); // ÇØ½ÃÄÚµå °è»ê
-    LookupHS(nextid, hashcode); // ÇØ½Ã Å×ÀÌºí¿¡¼­ identifier Á¶È¸
-    if (!found) { // ÇØ½Ã Å×ÀÌºí¿¡ µ¿ÀÏÇÑ identifier°¡ Á¸ÀçÇÏÁö ¾Ê´Â °æ¿ì
-        ADDHT(hashcode); // ÇØ½Ã Å×ÀÌºí¿¡ Ãß°¡
+    ComputeHS(nextid, nextfree); // í•´ì‹œì½”ë“œ ê³„ì‚°
+    LookupHS(nextid, hashcode); // í•´ì‹œ í…Œì´ë¸”ì—ì„œ identifier ì¡°íšŒ
+    if (!found) { // í•´ì‹œ í…Œì´ë¸”ì— ë™ì¼í•œ identifierê°€ ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ê²½ìš°
+        ADDHT(hashcode); // í•´ì‹œ í…Œì´ë¸”ì— ì¶”ê°€
     }
-    else { // ÇØ½Ã Å×ÀÌºí¿¡ identifier°¡ ÀÌ¹Ì Á¸ÀçÇÏ´Â °æ¿ì
-        nextfree = nextid; // ÀÎµ¦½º ÃÊ±âÈ­
+    else { // í•´ì‹œ í…Œì´ë¸”ì— identifierê°€ ì´ë¯¸ ì¡´ì¬í•˜ëŠ” ê²½ìš°
+        nextfree = nextid; // ì¸ë±ìŠ¤ ì´ˆê¸°í™”
     }
 }
