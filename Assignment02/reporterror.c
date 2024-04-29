@@ -1,3 +1,9 @@
+/* 
+* reporterror.c - Identifier error í™•ì¸
+* contributors: ê¹€ì¤‘í˜„, ê³½ì„œì§„, ì´ë‚˜í˜„, ê¹€ì„ ì˜
+* date: 04/30/2024
+*/
+
 #include "glob.h"
 
 int cErrors = 0;
@@ -7,16 +13,16 @@ void ReportError(ERRORtypes error) {
     cErrors++;
 
     switch (error) {
-    case noerror: // ¿¡·¯°¡ ¹ß»ıÇÏÁö ¾ÊÀº °æ¿ì
-        break;
-    case illid: // inputÀÌ ¼ıÀÚ·Î ½ÃÀÛÇÏ´Â °æ¿ì
-        error_message = "Illegal Identifier";
-        break;
-    case illic: // Çã¿ëµÇÁö ¾ÊÀº ¹®ÀÚ°¡ ³ªÅ¸³­ °æ¿ì
-        error_message = "Illegal Character";
-        break;
-    case overlen: // identifier°¡ 12ÀÚ ÀÌ³»°¡ ¾Æ´Ñ °æ¿ì
-        error_message = "Too long identifier";
-        break;
+        case noerror: // ì—ëŸ¬ê°€ ë°œìƒí•˜ì§€ ì•Šì€ ê²½ìš°
+            break;
+        case illid: // inputì´ ìˆ«ìë¡œ ì‹œì‘í•˜ëŠ” ê²½ìš°
+            error_message = "Illegal Identifier";
+            break;
+        case illic: // í—ˆìš©ë˜ì§€ ì•Šì€ ë¬¸ìê°€ ë‚˜íƒ€ë‚œ ê²½ìš°
+            error_message = "Illegal Character";
+            break;
+        case overlen: // identifierê°€ 12ì ì´ë‚´ê°€ ì•„ë‹Œ ê²½ìš°
+            error_message = "Too long identifier";
+            break;
     }
 }
