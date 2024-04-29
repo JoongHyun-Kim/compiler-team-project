@@ -14,11 +14,13 @@ int lineNum = 1;
 extern yylex();
 extern char* yytext;
 
+// 토큰 정보를 출력하기 위한 헤더 출력
 void PrintHeading()
 {
 	printf("Line Number		Token type		ST-index		Token\n");
 }
 
+// 인식된 토큰의 정보를 출력
 void PrintToken(enum tnumber tn) {
 	switch (tn) {
 	case TCONST: printf("%d			const						%s\n", lineNum, yytext); break;
@@ -69,6 +71,7 @@ void PrintToken(enum tnumber tn) {
 	}
 }
 
+// 메인 함수
 void main()
 {
 	enum tnumber tn;
@@ -76,12 +79,11 @@ void main()
 	while ((tn = yylex()) != TEOF) {
 		PrintToken(tn);
 	}
-
+	
 	if (cErrors == 0) {
 		printf("No errors detected\n");
 	}
 	else {
 		printf("%d errors detected\n", cErrors);
 	}
-
 }
