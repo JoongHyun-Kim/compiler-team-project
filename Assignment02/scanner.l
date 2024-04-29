@@ -79,6 +79,7 @@ ERRORtypes error = noerror;
 }
 %%
 
+// 스캔이 끝났을 때 호출
 int yywrap()
 {
 printf("\n");
