@@ -1,0 +1,12 @@
+#include <stdio.h>
+
+int main() {
+    int c@unt = 0;
+
+    while (count < 5) {
+        printf("$o Tired!");
+        count++;
+    }
+
+    return F\lse;
+}

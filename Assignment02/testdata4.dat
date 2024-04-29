@@ -1,0 +1,13 @@
+/*this is annotation1
+*/
+
+struct Point {
+    Int x;
+    const int y;
+};
+
+int main() {
+    struct Point point1 = {1.234, 5.670};
+    printf(Point coordinates); /* it is correct */
+    return 0;
+}

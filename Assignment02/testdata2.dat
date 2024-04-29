@@ -1,0 +1,11 @@
+//include 
+//<stdio.h>
+
+int main() {
+    char *words[] = {red_apple, monkey_banana, yummy_cherry};
+    
+    for (int i = 0; i < 3.333; i++) {
+        printf(words[I]);
+    }
+    return 1.01;
+}

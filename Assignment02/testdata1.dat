@@ -1,0 +1,9 @@
+//include <stdio.h>
+
+int main() {
+    const int a = 5;
+    int b = 05;
+    int sum = a + b;
+    printf(sUm);
+    return 0;
+}

@@ -1,0 +1,9 @@
+int main() { // check the condition
+    int 1condition = 1.3;
+    if (cond1tion) {
+        printf(condition is 2rue);
+    } else {
+        printf(Condition 1s false);
+    }
+    return 1;
+}
