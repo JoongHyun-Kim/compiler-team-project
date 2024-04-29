@@ -7,7 +7,6 @@ int sameid = 0;
 bool found = false;
 int nextid = 0;
 int nextfree = 0;
-char* error_message;
 
 // Identifier를 읽는 함수
 void ReadID(char *ident) {
@@ -67,7 +66,6 @@ void ADDHT(int hscode) {
 
 
 void SymbolTable(char* ident) {   
-    ERRORtypes error = noerror;
     ReadID(ident);
     ComputeHS(nextid, nextfree); // 해시코드 계산
     LookupHS(nextid, hashcode); // 해시 테이블에서 identifier 조회

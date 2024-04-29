@@ -43,11 +43,10 @@ ERRORtypes error = noerror;
 "]"	return(TRIGHTBRACKET);
 ";"  	return(TSEMICOLON);
 ","	return(TCOMMA);
-"."	return(TDOT);
 [A-Za-z_][A-Za-z0-9_]* {
 	if(yyleng > 12) {
 		error = overlen;
-		ReportError(error);
+		ReportError(error, yytext);
 		return(TERROR);
 	}
 	else {
@@ -55,11 +54,12 @@ ERRORtypes error = noerror;
 		return(TIDENT);	
 	}
 }
+
 [1-9][0-9]*|0([0-7]+|(x|X)[0-9A-Fa-f]*)? return(TNUMBER);
 [0-9]+"."[0-9]+	return(TRNUMBER);
 [0-9]+[A-Za-z0-9]+ {
 	error = illid;
-	ReportError(error);
+	ReportError(error, yytext);
 	return(TERROR);
 }
 "/*"([^*]|\*+[^*/])*\**"*/"	;
@@ -68,7 +68,7 @@ ERRORtypes error = noerror;
 [ \t]	;
 .	{
 	error = illic;
-	ReportError(error);
+	ReportError(error, yytext);
 	return(TERROR);
 }
 %%
@@ -76,6 +76,6 @@ ERRORtypes error = noerror;
 int yywrap()
 {
 printf("\n");
-printf(" JoongHyun Kim(2076088) SeoJin Kwak(2076016) SeonYeong Kim(2071010) NaHyun Lee(2076292) \n");
+printf("JoongHyun Kim(2076088) SeoJin Kwak(2076016) SeonYeong Kim(2071010) NaHyun Lee(2076292) \n");
 return 1;
 }

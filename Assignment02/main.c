@@ -16,7 +16,7 @@ void PrintHeading()
 void PrintToken(enum tnumber tn) {
 	switch (tn) {
 	case TCONST: printf("%d			const						%s\n", lineNum, yytext); break;
-	case TELSE: printf("%d			else						%s\n", lineNum, yytext); break;	
+	case TELSE: printf("%d			else						%s\n", lineNum, yytext); break;
 	case TIF: printf("%d			if						%s\n", lineNum, yytext); break;
 	case TINT: printf("%d			int						%s\n", lineNum, yytext); break;
 	case TRETURN: printf("%d			return						%s\n", lineNum, yytext); break;
@@ -50,8 +50,7 @@ void PrintToken(enum tnumber tn) {
 	case TRIGHTBRACKET: printf("%d			right_bracket					%s\n", lineNum, yytext); break;
 	case TSEMICOLON: printf("%d			semicolon					%s\n", lineNum, yytext); break;
 	case TCOMMA: printf("%d			comma						%s\n", lineNum, yytext); break;
-	case TDOT: printf("%d			dot						%s\n", lineNum, yytext); break;
-	case TIDENT: 
+	case TIDENT:
 		if (!found) {
 			printf("%d			ident			%d			%s\n", lineNum, nextid, yytext); break;
 		}

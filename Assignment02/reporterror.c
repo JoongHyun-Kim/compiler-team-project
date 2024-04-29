@@ -5,6 +5,7 @@ char *error_message;
 
 void ReportError(ERRORtypes error) {
     cErrors++;
+
     switch (error) {
     case noerror: // 에러가 발생하지 않은 경우
         break;
