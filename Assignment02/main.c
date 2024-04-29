@@ -58,7 +58,8 @@ void PrintToken(enum tnumber tn) {
 		else {
 			printf("%d			ident			already existed		%s\n", lineNum, yytext); break;
 		}
-	case TNUMBER: printf("%d			number						%d\n", lineNum, atoi(yytext)); break;
+	case TNUMBER: printf("%d			number						%s\n", lineNum, yytext); break;
+	case TRNUMBER: printf("%d			real_number					%s\n", lineNum, yytext); break;
 	case TERROR: printf("%d			**ERROR**					%s %s\n", lineNum, yytext, error_message); break;
 	}
 }
