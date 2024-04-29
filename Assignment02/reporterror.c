@@ -9,6 +9,7 @@
 int cErrors = 0;
 char *error_message;
 
+// 각 에러의 에러 메시지를 설정
 void ReportError(ERRORtypes error) {
     cErrors++;
 
