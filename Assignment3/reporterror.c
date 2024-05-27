@@ -6,43 +6,44 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include 'tn.h'
-#include 'glob.h'
+#include "tn.h"
+#include "glob.h"
 
+int cErrors = 0;
 extern line(int);
 extern yylex();
 
 /*
-* yyerror() - eror 함수
+* yyerror() - error 함수
 */
 
 yyerror(s)
-char ^s;
+char *s;
 {
 
 }
 
-void printError(ERRORtpes err)
+void printError(ERRORtypes err)
 {
 	switch(err) {
 	    case 0: //wrong_st
 	        line(cLine);
-		    printf('< Error > => Wrong Statement!\n';
+		    printf("< Error > => Wrong Statement!\n");
 		    cErrors++;
 		    break;
 		case 1: //wrong_funcdef
 		    line(cLine);
-		    printf('< Error > => Wrong function definition\n');
+		    printf("< Error > => Wrong function definition\n");
 		    cErrors++;
 		    break;
 	    case 2: //nosemi
 	        line(cLine);
-	        printf('< Error > => Missing brace\n');
+	        printf("< Error > => Missing brace\n");
 	        cErrors++;
 	        break;
 	   case 4: //nobracket
 	        line(cLine);
-	        printf('< Error > => Missing bracket\n');
+	        printf("< Error > => Missing bracket\n");
 	        cErrors++;
 	        break;
 	}
