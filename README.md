@@ -1,5 +1,5 @@
 # compiler-team-project
-Repository for 2024 Compiler Team Project
+2024-1 컴파일러 팀 프로젝트를 위한 레포지토리
 
 ---
 
