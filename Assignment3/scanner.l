@@ -61,7 +61,7 @@ ERRORtypes error = noerror;
 	}
 }
 
-[1-9][0-9]*|0([0-7]+|(x|X)[0-9A-Fa-f]*)? return(TNUMBER);
+[0-9]+		return(TNUMBER);
 [0-9]+"."[0-9]+	return(TRNUMBER);
 [0-9]+[A-Za-z0-9]+ {
 	error = illid;
