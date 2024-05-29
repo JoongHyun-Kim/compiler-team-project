@@ -15,12 +15,16 @@ typedef struct HTentry* HTpointer;
 typedef struct HTentry {
 	int index; // ST에서 identifier의 인덱스
 	HTpointer next; // 다음 identifier를 가리키는 포인터
+	int type;	// type
+	int line;	// line num
 } HTentry;
 
-enum errorTypes { noerror, illid, illic, overlen }; // 에러 유형 enum으로 정의
+enum errorTypes { noerror, illid, illic, overlen, wrong_st, wrong_funcdef }; // 에러 유형 enum으로 정의
 typedef enum errorTypes ERRORtypes;
 
 extern HTpointer HT[HTsize];
+extern HTpointer look_id;
+extern HTpointer look_tmp;
 extern char ST[STsize];
 
 extern int nextid; // 현재 identifier 인덱스
@@ -31,7 +35,6 @@ extern int sameid; // 같은 식별자의 첫 인덱스
 
 extern bool found;  // identifier의 이전 등장 여부
 
-extern int lineNum; // 줄 번호
-extern int cLine;
+extern int cLine;	// 줄 번호
 extern int cErrors; // 에러 개수
-extern char *error_message; // 에러 메세지
+extern char* error_message; // 에러 메세지

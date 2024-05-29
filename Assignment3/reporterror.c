@@ -10,41 +10,52 @@
 #include "glob.h"
 
 int cErrors = 0;
-extern line(int);
 extern yylex();
 
 /*
 * yyerror() - error 함수
 */
 
-yyerror(s)
-char *s;
-{
+void yyerror(char* s) {
 
+}
+
+void ReportError(ERRORtypes error) {
+	cErrors++;
+
+	switch (error) {
+	case noerror: // 에러가 발생하지 않은 경우
+		break;
+	case illid: // input이 숫자로 시작하는 경우
+		printf("%d	< Error > => Illegal Identifier\n", cLine);
+		break;
+	case illic: // 허용되지 않은 문자가 나타난 경우
+		printf("%d	< Error > => Illegal Character\n", cLine);
+		break;
+	case overlen: // identifier가 12자 이내가 아닌 경우
+		printf("%d	< Error > => Too long identifier\n", cLine);
+		break;
+	}
 }
 
 void printError(ERRORtypes err)
 {
-	switch(err) {
-	    case 0: //wrong_st
-	        line(cLine);
-		    printf("< Error > => Wrong Statement!\n");
-		    cErrors++;
-		    break;
-		case 1: //wrong_funcdef
-		    line(cLine);
-		    printf("< Error > => Wrong function definition\n");
-		    cErrors++;
-		    break;
-	    case 2: //nosemi
-	        line(cLine);
-	        printf("< Error > => Missing brace\n");
-	        cErrors++;
-	        break;
-	   case 4: //nobracket
-	        line(cLine);
-	        printf("< Error > => Missing bracket\n");
-	        cErrors++;
-	        break;
+	switch (err) {
+	case 0: //wrong_st
+		printf("%d	< Error > => Wrong Statement\n", cLine);
+		cErrors++;
+		break;
+	case 1: //wrong_funcdef
+		printf("%d	< Error > => Wrong function definition\n", cLine);
+		cErrors++;
+		break;
+	case 2: //nosemi
+		printf("%d	< Error > => Missing brace\n", cLine);
+		cErrors++;
+		break;
+	case 4: //nobracket
+		printf("%d	< Error > => Missing bracket\n", cLine);
+		cErrors++;
+		break;
 	}
 }
