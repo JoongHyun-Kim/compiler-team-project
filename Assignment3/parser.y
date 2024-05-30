@@ -46,14 +46,15 @@ external_dcl		: function_def
 			| TIDENT error
 			{
 				yyerrok;
-				ReportError(wrong_st);  /* error - wrong statement */
+				ReportError(wrong_st);
 			}
+			| TERROR
 			;
 		            
 function_def		: function_header compound_st
 			| function_header TSEMICOLON
-			| function_header error   /* 비정상적인 함수 정의 */
-			{				
+			| function_header error
+			{
 				yyerrok;
 				ReportError(wrong_funcdef);	/* error - wrong function definition */
 			}
@@ -116,6 +117,7 @@ function_name		: TIDENT
                         		look_tmp = look_id;
                   		}
 			}
+			| TERROR
 			;
                     
 formal_param		: TLEFTPARENTHESIS opt_formal_param TRIGHTPARENTHESIS
@@ -132,6 +134,11 @@ opt_formal_param	: formal_param_list
 
 formal_param_list	: param_dcl	
 			| formal_param_list TCOMMA param_dcl
+			| formal_param_list param_dcl error 
+			{
+				yyerrok;
+				ReportError(nocomma);
+			}
 			;
 
 param_dcl		: dcl_spec declarator
@@ -173,14 +180,15 @@ declaration		: dcl_spec init_dcl_list TSEMICOLON
 				type_int = 0;
 				type_void = 0;
 				type_float = 0;
+				type_const = 0;
 			}
 			| dcl_spec init_dcl_list error
 			{
-				look_tmp->type = 0;
+				yyerrok;
 				type_int = 0;
 				type_void = 0;
 				type_float = 0;
-				yyerrok;
+				type_const = 0;
 				ReportError(nosemi);
 			}
 			;
@@ -188,7 +196,7 @@ declaration		: dcl_spec init_dcl_list TSEMICOLON
 
 init_dcl_list		: init_declarator
 			| init_dcl_list TCOMMA init_declarator
-			| init_dcl_list init_declarator
+			| init_dcl_list init_declarator error
 			{
 				yyerrok;
 				ReportError(nocomma);
@@ -197,6 +205,17 @@ init_dcl_list		: init_declarator
 
 init_declarator		: declarator
 			| declarator TASSIGN TNUMBER
+			| declarator TASSIGN TRNUMBER
+			| declarator TASSIGN TLEFTBRACE init_list TRIGHTBRACE
+			| declarator TASSIGN TLEFTBRACE init_list error
+			{
+				yyerrok;
+				ReportError(nobrace);
+			}
+			;
+
+init_list		: TNUMBER
+			| init_list TCOMMA TNUMBER
 			;
 
 declarator		: TIDENT
@@ -228,6 +247,7 @@ declarator		: TIDENT
 				yyerrok;
 				ReportError(nobracket);
 			}
+			| TERROR
 			;
 				
 
@@ -302,32 +322,32 @@ assignment_exp		: logical_or_exp
 			| unary_exp TMULASSIGN assignment_exp
 			| unary_exp TDIVASSIGN assignment_exp	
 			| unary_exp TMODASSIGN assignment_exp
-			| unary_exp TASSIGN
+			| unary_exp TASSIGN error
 			{
 				yyerrok;
 				ReportError(wrong_assign);
 			}
-			| unary_exp TADDASSIGN		
+			| unary_exp TADDASSIGN error
 			{
 				yyerrok;
 				ReportError(wrong_assign);
 			}
-			| unary_exp TSUBASSIGN		
+			| unary_exp TSUBASSIGN error
 			{
 				yyerrok;
 				ReportError(wrong_assign);
 			}
-			| unary_exp TMULASSIGN		
+			| unary_exp TMULASSIGN error
 			{
 				yyerrok;
 				ReportError(wrong_assign);
 			}
-			| unary_exp TDIVASSIGN		
+			| unary_exp TDIVASSIGN error
 			{
 				yyerrok;
 				ReportError(wrong_assign);
 			}
-			| unary_exp TMODASSIGN		
+			| unary_exp TMODASSIGN error
 			{
 				yyerrok;
 				ReportError(wrong_assign);
@@ -393,8 +413,18 @@ unary_exp		: postfix_exp
 			;
 
 postfix_exp		: primary_exp
-			| postfix_exp TLEFTBRACKET expression TRIGHTBRACKET	
+			| postfix_exp TLEFTBRACKET expression TRIGHTBRACKET
+			| postfix_exp TLEFTBRACKET expression error
+			{
+				yyerrok;
+				ReportError(nobracket);
+			}
 			| postfix_exp TLEFTPARENTHESIS opt_actual_param TRIGHTPARENTHESIS
+			| postfix_exp TLEFTPARENTHESIS expression error
+			{
+				yyerrok;
+				ReportError(noparen);
+			}
 			| postfix_exp TINC
 			| postfix_exp TDEC
 			;
@@ -424,5 +454,6 @@ primary_exp		: TIDENT
 				yyerrok;
 				ReportError(noparen);
 			}
+			| TERROR
 			;
 %%

@@ -56,7 +56,7 @@
 		return(TERROR);
 	}
 	else {
-		SymbolTable(yytext);
+		SymbolTable();
 		return(TIDENT);	
 	}
 }

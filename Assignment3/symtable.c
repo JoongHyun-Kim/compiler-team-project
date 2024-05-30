@@ -6,6 +6,7 @@
 
 #include "glob.h"
 
+/*
 ERRORtypes error;
 HTpointer HT[HTsize];
 char ST[STsize];
@@ -14,6 +15,7 @@ int sameid = 0;
 bool found = false;
 int nextid = 0;
 int nextfree = 0;
+*/
 
 
 void PrintHStable()
@@ -53,10 +55,10 @@ void PrintHStable()
 }
 
 // Identifier를 읽는 함수
-void ReadID(char* ident) {
+void ReadID() {
     nextid = nextfree; // ident의 시작 index를 nextid에 저장
-    for (int i = 0; i < strlen(ident); i++) {
-        ST[nextfree++] = ident[i]; // ident을 ST에 추가하고 다음 문자로 이동
+    for (int i = 0; i < yyleng; i++) {
+        ST[nextfree++] = yytext[i]; // ident을 ST에 추가하고 다음 문자로 이동
     }
     ST[nextfree++] = '\0'; // 문자열의 끝을 나타내는 null 문자 추가
 }
@@ -98,19 +100,6 @@ void LookupHS(int nid, int hscode) {
     }
 }
 
-// 해시 테이블에 identifier를 추가하는 함수
-/*void ADDHT(int hscode) {
-    HTpointer ptr;
-    ptr = (HTpointer)malloc(sizeof(struct HTentry));
-    ptr->type = 0;
-    ptr->next = NULL;
-    ptr->line = cLine;
-    HT[hscode] = ptr;
-    ptr->index = nextid;
-
-    look_id = ptr;
-}*/
-
 void ADDHT(int hscode)
 {
     HTpointer ptr;
@@ -135,8 +124,8 @@ void ADDHT(int hscode)
 }
 
 // 주어진 identifier를 처리해 심볼 테이블에 추가 또는 이미 존재하는지 확인
-void SymbolTable(char* ident) {
-    ReadID(ident);
+void SymbolTable() {
+    ReadID();
     ComputeHS(nextid, nextfree); // 해시코드 계산
     LookupHS(nextid, hashcode); // 해시 테이블에서 identifier 조회
     if (!found) { // 해시 테이블에 동일한 identifier가 존재하지 않는 경우

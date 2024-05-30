@@ -21,6 +21,7 @@ typedef struct HTentry {
 
 enum errorTypes { noerror, illid, illic, overlen, overflow, wrong_st, wrong_funcdef, wrong_assign, nosemi, noparen, nobrace, nobracket, nocomma }; // 에러 유형 enum으로 정의
 typedef enum errorTypes ERRORtypes;
+ERRORtypes error;
 
 HTpointer HT[HTsize];
 HTpointer look_id;
@@ -34,6 +35,9 @@ int hashcode; // identifier의 해시코드
 int sameid; // 같은 식별자의 첫 인덱스
 
 bool found;  // identifier의 이전 등장 여부
+
+int yyleng;
+char* yytext;
 
 int cLine;	// 줄 번호
 int cErrors; // 에러 개수
