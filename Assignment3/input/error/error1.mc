@@ -1,5 +1,5 @@
 int main() {
-    int a = 5
+    int a = 5;
     float 1b = 10.5;
 
     while () {
