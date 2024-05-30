@@ -29,8 +29,10 @@ extern yyerror(s);
 %token TOR TAND TEQUAL TNOTEQU TGREAT TLESS TGREATE TLESSE TINC TDEC
 %token TADD TSUB TMUL TDIV TMOD TNOT TASSIGN TCOMMA TSEMICOLON 
 %token TLEFTPARENTHESIS TRIGHTPARENTHESIS TLEFTBRACKET TRIGHTBRACKET TLEFTBRACE TRIGHTBRACE
-%nonassoc LOWER_THAN_ELSE
-%nonassoc TELSE
+
+/* 우선순위 정의 */
+%nonassoc LOWER_THAN_ELSE /*    'else' 키워드보다 낮은 우선순위를 가지는 'if'를 정의하여 'if' 문과 'else' 문 사이의 모호성을 해결 */
+%nonassoc TELSE /* 'else' 키워드를 정의하여 if-else 문에서 'else'의 결합성을 지정 */
 
 %%
 mini_c			: translation_unit
@@ -42,18 +44,18 @@ translation_unit	: external_dcl
 		            
 external_dcl		: function_def	
 			| declaration	
-			| TIDENT TSEMICOLON
-			| TIDENT error
+			| TIDENT TSEMICOLON /* identifier와 세미콜론을 처리한다. */
+			| TIDENT error /* 식별자와 그 뒤에 오류가 있는 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_st);
 			}
-			| TERROR
+			| TERROR /* 일반적인 구문 오류 처리 */
 			;
 		            
 function_def		: function_header compound_st
-			| function_header TSEMICOLON
-			| function_header error
+			| function_header TSEMICOLON /*   함수 헤더와 세미콜론으로 구성된 함수 선언을 처리 */
+			| function_header error /*   함수 헤더 뒤에 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_funcdef);	/* error - wrong function definition */
@@ -61,7 +63,7 @@ function_def		: function_header compound_st
 			;
                     
 function_header	    	: dcl_spec function_name formal_param
-			| TIDENT function_name formal_param error
+			| TIDENT function_name formal_param error /*  declaration specifier 생략 등 잘못된 형식의 함수 헤더를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_funcdef);
@@ -79,9 +81,9 @@ dcl_specifier		: type_qualifier
 			| type_specifier
 			;
 		            
-type_qualifier		: TCONST
+type_qualifier		: TCONST 
 			{
-				type_const = 1;
+				type_const = 1;    /* type : const */
 			}
 			;
                     
@@ -107,7 +109,6 @@ type_specifier		: TINT
                     
 function_name		: TIDENT
 			{
-				/* identifier about parse error or not defined identifier/function */
 				if(look_id->type == 0 || look_id->type == 10) {
 					if(type_void == 1) {
                               			look_id->type = 6; /* func, void */
@@ -116,17 +117,21 @@ function_name		: TIDENT
                         		} else if(type_float == 1) {
 						look_id->type = 8; /* func, float */
 					}
+
+					/* 초기화 */
                         		type_int = 0;
                         		type_void = 0;
 					type_float = 0;
+
+					/* look_temp에 현재 identifier 저장 */
                         		look_tmp = look_id;
                   		}
 			}
-			| TERROR
+			| TERROR /* 구문 오류 처리 */
 			;
                     
 formal_param		: TLEFTPARENTHESIS opt_formal_param TRIGHTPARENTHESIS
-			| TLEFTPARENTHESIS opt_formal_param error
+			| TLEFTPARENTHESIS opt_formal_param error /*  오른쪽 괄호 ')'가 누락된 형식 매개변수 선언을 처리 */
 			{
 				yyerrok;
 				ReportError(noparen);
@@ -139,7 +144,7 @@ opt_formal_param	: formal_param_list
 
 formal_param_list	: param_dcl	
 			| formal_param_list TCOMMA param_dcl
-			| formal_param_list param_dcl error 
+			| formal_param_list param_dcl error /*  쉼표를 사용하지 않고 formal parameter declaration을 나열할 때 발생하는 오류를 처리 */
 			{
 				yyerrok;
 				ReportError(nocomma);
@@ -165,7 +170,7 @@ param_dcl		: dcl_spec declarator
 			;
 
 compound_st		: TLEFTBRACE opt_dcl_list opt_stat_list TRIGHTBRACE
-			| TLEFTBRACE opt_dcl_list opt_stat_list error
+			| TLEFTBRACE opt_dcl_list opt_stat_list error /*  중괄호 또는 그 안에 있는 변수 선언과 명령문에 오류가 있는 경우 등 올바르지 않은 형식의 compound 명령문 처리 */
 			{
 				yyerrok;
 				ReportError(nobrace);
@@ -187,7 +192,7 @@ declaration		: dcl_spec init_dcl_list TSEMICOLON
 				type_float = 0;
 				type_const = 0;
 			}
-			| dcl_spec init_dcl_list error
+			| dcl_spec init_dcl_list error /* 올바르지 않은 형식의 선언을 처리. 오류가 있는 경우를 포함하며, 세미콜론으로 끝나지 않는 경우를 다룸 */
 			{
 				yyerrok;
 				type_int = 0;
@@ -201,7 +206,7 @@ declaration		: dcl_spec init_dcl_list TSEMICOLON
 
 init_dcl_list		: init_declarator
 			| init_dcl_list TCOMMA init_declarator
-			| init_dcl_list init_declarator error
+			| init_dcl_list init_declarator error /*  쉼표를 사용하지 않고 초기화된 변수 선언을 나열할 때 발생하는 오류를 처리 */
 			{
 				yyerrok;
 				ReportError(nocomma);
@@ -209,18 +214,18 @@ init_dcl_list		: init_declarator
 			;
 
 init_declarator		: declarator
-			| declarator TASSIGN TNUMBER
-			| declarator TASSIGN TRNUMBER
-			| declarator TASSIGN TLEFTBRACE init_list TRIGHTBRACE
-			| declarator TASSIGN TLEFTBRACE init_list error
+			| declarator TASSIGN TNUMBER /* 숫자로 초기화된 변수 선언을 처리 */
+			| declarator TASSIGN TRNUMBER /* 실수로 초기화된 변수 선언을 처리 */
+			| declarator TASSIGN TLEFTBRACE init_list TRIGHTBRACE /* 중괄호로 둘러싸인 초기화된 변수 선언을 처리 */
+			| declarator TASSIGN TLEFTBRACE init_list error /* 중괄호로 둘러싸인 초기화된 변수 선언에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(nobrace);
 			}
 			;
 
-init_list		: TNUMBER
-			| init_list TCOMMA TNUMBER
+init_list		: TNUMBER /*  숫자로 초기화된 변수 값을 처리 */
+			| init_list TCOMMA TNUMBER  /* 쉼표로 구분된 숫자로 초기화된 변수 값을 처리 */
 			;
 
 declarator		: TIDENT
@@ -247,12 +252,12 @@ declarator		: TIDENT
 				}
 				look_tmp = look_id;
 			}
-			| TIDENT TLEFTBRACKET opt_number error
+			| TIDENT TLEFTBRACKET opt_number error /* 배열 변수의 선언에서 오류가 발생한 경우를 처리*/
 			{
 				yyerrok;
 				ReportError(nobracket);
 			}
-			| TERROR
+			| TERROR /* 문법 오류가 발생하한 경우를 처리 */
 			;
 				
 
@@ -276,7 +281,7 @@ statement		: compound_st
 			;
 
 expression_st		: opt_expression TSEMICOLON
-			| opt_expression error
+			| opt_expression error /*  expression_st에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(nosemi);
@@ -287,9 +292,9 @@ opt_expression		: expression
 			|
 			;
 
-if_st			: TIF TLEFTPARENTHESIS expression TRIGHTPARENTHESIS statement %prec LOWER_THAN_ELSE
+if_st			: TIF TLEFTPARENTHESIS expression TRIGHTPARENTHESIS statement %prec LOWER_THAN_ELSE /*   올바른 형식의 if 문을 처리. 조건식 뒤에 중괄호로 둘러싸인 명령문이 옴. %prec LOWER_THAN_ELSE는 else보다 우선순위가 낮음을 의미 */
 			| TIF TLEFTPARENTHESIS expression TRIGHTPARENTHESIS statement TELSE statement
-			| TIF TLEFTPARENTHESIS expression error
+			| TIF TLEFTPARENTHESIS expression error /* if 문에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(noparen);
@@ -297,7 +302,7 @@ if_st			: TIF TLEFTPARENTHESIS expression TRIGHTPARENTHESIS statement %prec LOWE
 			;
 
 while_st		: TWHILE TLEFTPARENTHESIS expression TRIGHTPARENTHESIS statement
-			| TWHILE TLEFTPARENTHESIS expression error
+			| TWHILE TLEFTPARENTHESIS expression error /* while 문에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(noparen);
@@ -305,12 +310,12 @@ while_st		: TWHILE TLEFTPARENTHESIS expression TRIGHTPARENTHESIS statement
 			;
 
 return_st		: TRETURN opt_expression TSEMICOLON
-			| TRETURN opt_expression error
+			| TRETURN opt_expression error /* 반환값이 있는 return 문에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(nosemi);
 			}
-			| TRETURN error
+			| TRETURN error /* 반환값이 없는 return 문에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_st);
@@ -327,32 +332,32 @@ assignment_exp		: logical_or_exp
 			| unary_exp TMULASSIGN assignment_exp
 			| unary_exp TDIVASSIGN assignment_exp	
 			| unary_exp TMODASSIGN assignment_exp
-			| unary_exp TASSIGN error
+			| unary_exp TASSIGN error /* '='에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_assign);
 			}
-			| unary_exp TADDASSIGN error
+			| unary_exp TADDASSIGN error /* '+='에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_assign);
 			}
-			| unary_exp TSUBASSIGN error
+			| unary_exp TSUBASSIGN error /* '-='에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_assign);
 			}
-			| unary_exp TMULASSIGN error
+			| unary_exp TMULASSIGN error  /* '*='에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_assign);
 			}
-			| unary_exp TDIVASSIGN error
+			| unary_exp TDIVASSIGN error  /* '/='에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_assign);
 			}
-			| unary_exp TMODASSIGN error
+			| unary_exp TMODASSIGN error  /* '%='에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_assign);
@@ -361,7 +366,7 @@ assignment_exp		: logical_or_exp
 
 logical_or_exp		: logical_and_exp
 			| logical_or_exp TOR logical_and_exp
-			| logical_or_exp TOR error
+			| logical_or_exp TOR error /*  논리 또는 표현식에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_st);
@@ -370,7 +375,7 @@ logical_or_exp		: logical_and_exp
 
 logical_and_exp		: equality_exp
 			| logical_and_exp TAND equality_exp
-			| logical_and_exp TAND error
+			| logical_and_exp TAND error /* 논리 곱 표현식에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_st);
@@ -380,12 +385,12 @@ logical_and_exp		: equality_exp
 equality_exp		: relational_exp
 			| equality_exp TEQUAL relational_exp
 			| equality_exp TNOTEQU relational_exp
-			| equality_exp TEQUAL error
+			| equality_exp TEQUAL error   /* 동등성 표현식에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_st);
 			}
-			| equality_exp TNOTEQU error
+			| equality_exp TNOTEQU error /* 부등성 표현식에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_st);
@@ -419,13 +424,13 @@ unary_exp		: postfix_exp
 
 postfix_exp		: primary_exp
 			| postfix_exp TLEFTBRACKET expression TRIGHTBRACKET
-			| postfix_exp TLEFTBRACKET expression error
+			| postfix_exp TLEFTBRACKET expression error /*  배열 접근 연산에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(nobracket);
 			}
 			| postfix_exp TLEFTPARENTHESIS opt_actual_param TRIGHTPARENTHESIS
-			| postfix_exp TLEFTPARENTHESIS expression error
+			| postfix_exp TLEFTPARENTHESIS expression error /*   함수 호출에서 오류가 발생한 경우를 처리*/
 			{
 				yyerrok;
 				ReportError(noparen);
@@ -447,6 +452,7 @@ actual_param_list	: assignment_exp
 
 primary_exp		: TIDENT
 			{
+				/* identifeir가 정의되지 않은 경우를 처리 */
 				if(look_id->type == 0) {
 					look_id->type = 10;	/* not defined */
 				}
@@ -454,11 +460,11 @@ primary_exp		: TIDENT
 			| TNUMBER
 			| TRNUMBER
 			| TLEFTPARENTHESIS expression TRIGHTPARENTHESIS
-			| TLEFTPARENTHESIS expression error
+			| TLEFTPARENTHESIS expression error /* 괄호로 둘러싸인 표현식에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(noparen);
 			}
-			| TERROR
+			| TERROR /* 일반적인 오류 처리 */
 			;
 %%
