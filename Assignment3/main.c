@@ -14,12 +14,11 @@ extern void PrintHStable();
 
 void main()
 {
+    cLine = 1;
+    cErrors = 0;
     printf("\n\t[Error Report : Error Information]");
     printf("\n=================================================\n");
     printf("*** MiniC parsing begins\n\n");
-    cLine = 1;
-    nextid = 0;
-    nextfree = 0;
     yyparse();
     printf("\nParsing ends. ***\n");
     if (cErrors == 0) printf("\nno error detected!\n");

@@ -68,10 +68,9 @@
 	return(TERROR);
 }
 "//".*	;
-[\n] 	{ cLine++; }
 [ \t]	;
+[\n] 	{ cLine++; }
 .	{
-	printf("%s",yytext);
 	ReportError(illic);
 	return(TERROR);
 }

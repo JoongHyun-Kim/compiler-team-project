@@ -61,6 +61,11 @@ function_def		: function_header compound_st
 			;
                     
 function_header	    	: dcl_spec function_name formal_param
+			| TIDENT function_name formal_param error
+			{
+				yyerrok;
+				ReportError(wrong_funcdef);
+			}
 			;
                     
 dcl_spec		: dcl_specifiers
