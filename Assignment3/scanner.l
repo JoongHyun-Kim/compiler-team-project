@@ -61,7 +61,7 @@
 	}
 }
 
-[1-9][0-9]* return(TNUMBER);
+[0-9]+ return(TNUMBER);
 [0-9]+"."[0-9]+	return(TRNUMBER);
 [0-9]+[A-Za-z0-9]+ {
 	ReportError(illid);
@@ -71,6 +71,7 @@
 [\n] 	{ cLine++; }
 [ \t]	;
 .	{
+	printf("%s",yytext);
 	ReportError(illic);
 	return(TERROR);
 }
