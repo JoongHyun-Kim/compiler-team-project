@@ -91,11 +91,12 @@ void LookupHS(int nid, int hscode) {
     }
 }
 
+// 해시 테이블에 identifier를 추가하는 함수
 void ADDHT(int hscode)
 {
     HTpointer ptr;
 
-    if (HT[hscode] == NULL) {
+    if (HT[hscode] == NULL) { // NULL인 경우 바로 추가
         ptr = (HTpointer)malloc(sizeof(struct HTentry));
         ptr->type = 0;
         ptr->line = cLine;
@@ -103,7 +104,7 @@ void ADDHT(int hscode)
         ptr->next = NULL;
         HT[hscode] = ptr;
     }
-    else {
+    else { // 이미 존재하면, Linked List로 연결
         ptr = (HTpointer)malloc(sizeof(struct HTentry));
         ptr->type = 0;
         ptr->line = cLine;
