@@ -9,49 +9,50 @@
 #include "tn.h"
 #include "glob.h"
 
-int cLine = 1;
 extern int yyparse();
 
-void printType(int type) {
-    switch (type) {
-	case 1:
-		printf("type int");
-	case 2:
-		printf("type void");
-    }
-}
-
-void PrintHStable() {
-	printf("\n\n\n\n\n[[ HASH TABLE ]]\n\n");
-    int i, j;
+void PrintHStable()
+{
     HTpointer here;
+    int i, j;
+
+    printf("\n\n\n\n\n[[HASH TABLE]]\n\n");
+    printf("===========================================\n");
 
     for (i = 0; i < HTsize; i++) {
-        if (HT[i] != NULL) { // 노드가 존재하면
-            printf(" Hash Code %3d : ", i); // 현재 해시 코드 출력
-            for (here = HT[i]; here != NULL; here = here->next) { // 연결 리스트의 모든 노드 방문
-                j = here->index; // 현재 노드의 identifier 시작 인덱스
-                while (ST[j] != '\0' && j < STsize)
-                    printf("%c", ST[j++]); // identifier 문자 하나씩 출력
-                printType(here->type);
-                printf("line %d", here->line);
-            }
-            printf("\n");
+        if (HT[i] != NULL) {
+            here = HT[i];
+            do {
+                printf("Hash Code%3d : (", i);
+                for (j = here->index; ST[j] != '\0'; j++) printf("%c", ST[j]);
+                printf(" : ");
+
+                switch (here->type) {
+                case 1: printf("integer scalar variable, line%d)\n", here->line); break;
+                case 2: printf("void scalar variable, line%d)\n", here->line); break;
+                case 3: printf("integer array variable, line%d)\n", here->line); break;
+                case 4: printf("function, return type=void, line%d)\n", here->line); break;
+                case 5: printf("function, return type=int, line%d)\n", here->line); break;
+                case 6: printf("not defined identifier/function, line%d)\n", here->line); break;
+                }
+                here = here->next;
+            } while (here != NULL);
         }
     }
+    printf("===========================================\n");
 }
 
 void main()
 {
-	printf("\n\t[Error Report : Error Information]");
-	printf("\n=================================================\n");
+    printf("\n\t[Error Report : Error Information]");
+    printf("\n=================================================\n");
 
-	cLine = 1;
-    int result = yyparse();
-    printf("result %d", result);
-	if (cErrors == 0) printf("\n\t no error detected!\n");
-	else printf("\n\t %d error(s) detected!\n", cErrors);
-	printf("\n=================================================\n");
-	PrintHStable(); // identifier와 그 type을 print하는 함수
-	printf("JoongHyun Kim(2076088) Seojin Kwak(2076016) Seonyeong Kim(2071010) NaHyun Lee(2076292) \n");
+    cLine = 1;
+    yyparse();
+    if (cErrors == 0) printf("\n\t no error detected!\n");
+    else printf("\n\t %d error(s) detected!\n", cErrors);
+    printf("\n=================================================\n");
+    printf("Parsing ends.");
+    PrintHStable(); // identifier와 그 type을 print하는 함수
+    printf("JoongHyun Kim(2076088) Seojin Kwak(2076016) Seonyeong Kim(2071010) NaHyun Lee(2076292) \n");
 }

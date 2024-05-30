@@ -1,7 +1,7 @@
 /*
 * symtable.c - Identifier를 읽고 HT를 구성
 * contributors: 김중현, 곽서진, 이나현, 김선영
-* date: 04/30/2024
+* date: 31/05/2024
 */
 
 #include "glob.h"
@@ -67,7 +67,10 @@ void ADDHT(int hscode) {
     ptr = (HTpointer)malloc(sizeof(ptr)); // 새로운 노드 동적 할당
     ptr->index = nextid; // 현재 identifier의 인덱스 설정
     ptr->next = HT[hscode]; // 새 노드의 다음 노드를 현재 해시코드의 첫 번째 노드로 설정
+    ptr->type = 0;
+    ptr->line = cLine;
     HT[hscode] = ptr; // 연결 리스트에 identifier 삽입
+    look_id = ptr;
 }
 
 // 주어진 identifier를 처리해 심볼 테이블에 추가 또는 이미 존재하는지 확인

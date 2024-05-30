@@ -19,22 +19,22 @@ typedef struct HTentry {
 	int line;	// line num
 } HTentry;
 
-enum errorTypes { noerror, illid, illic, overlen, wrong_st, wrong_funcdef, nosemi, nobracket }; // 에러 유형 enum으로 정의
+enum errorTypes { noerror, illid, illic, overlen, wrong_st, wrong_funcdef, nosemi, nobrace, nobracket }; // 에러 유형 enum으로 정의
 typedef enum errorTypes ERRORtypes;
 
-extern HTpointer HT[HTsize];
-extern HTpointer look_id;
-extern HTpointer look_tmp;
-extern char ST[STsize];
+HTpointer HT[HTsize];
+HTpointer look_id;
+HTpointer look_tmp;
+char ST[STsize];
 
-extern int nextid; // 현재 identifier 인덱스
-extern int nextfree; // ST에서 다음 available한 인덱스
+int nextid; // 현재 identifier 인덱스
+int nextfree; // ST에서 다음 available한 인덱스
 
-extern int hashcode; // identifier의 해시코드
-extern int sameid; // 같은 식별자의 첫 인덱스
+int hashcode; // identifier의 해시코드
+int sameid; // 같은 식별자의 첫 인덱스
 
-extern bool found;  // identifier의 이전 등장 여부
+bool found;  // identifier의 이전 등장 여부
 
-extern int cLine;	// 줄 번호
-extern int cErrors; // 에러 개수
-extern char* error_message; // 에러 메세지
+int cLine;	// 줄 번호
+int cErrors; // 에러 개수
+char* error_message; // 에러 메세지

@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include "tn.h"
 #include "glob.h"
-ERRORtypes error = noerror;
 %}
 
 %%
@@ -53,8 +52,7 @@ ERRORtypes error = noerror;
 ","	return(TCOMMA);
 [A-Za-z_][A-Za-z0-9_]* {
 	if(yyleng > 12) {
-		error = overlen;
-		ReportError(error);
+		ReportError(overlen);
 		return(TERROR);
 	}
 	else {
@@ -66,16 +64,14 @@ ERRORtypes error = noerror;
 [1-9][0-9]* return(TNUMBER);
 [0-9]+"."[0-9]+	return(TRNUMBER);
 [0-9]+[A-Za-z0-9]+ {
-	error = illid;
-	ReportError(error);
+	ReportError(illid);
 	return(TERROR);
 }
 "//".*	;
-"\n" 	{ cLine++; }
+[\n] 	{ cLine++; }
 [ \t]	;
 .	{
-	error = illic;
-	ReportError(error);
+	ReportError(illic);
 	return(TERROR);
 }
 %%
@@ -83,7 +79,5 @@ ERRORtypes error = noerror;
 // 스캔이 끝났을 때 호출
 int yywrap()
 {
-printf("\n");
-printf("JoongHyun Kim(2076088) SeoJin Kwak(2076016) SeonYeong Kim(2071010) NaHyun Lee(2076292) \n");
-return 1;
+	return 1;
 }
