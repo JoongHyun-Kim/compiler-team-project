@@ -1,9 +1,11 @@
-int main() {
-    int numbers[] = {1, 2, 3, 4, 5};
-    int size = sizeof(numbers) / sizeof(numbers[0]);
-    
-    for(int i = 0; i < size; i++) {
-        printf("%d ", numbers[i]);
-    }
+int main(void) {
+    int sum;
+ 
+    int a = 3;
+    int b = 4;
+ 
+    sum = a + b;
+    printf(sum);
+ 
     return 0;
 }
