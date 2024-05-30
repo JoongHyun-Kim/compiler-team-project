@@ -1,7 +1,7 @@
 /*
 * glob.h - 프로그램에 사용된 global variable 정의
 * contributors: 김중현, 곽서진, 이나현, 김선영
-* date: 31/05/2024
+* date: 05/31/2024
 */
 
 #include <stdlib.h>
