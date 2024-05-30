@@ -1,11 +1,9 @@
 int main(void) {
-    int sum;
+    int mul;
  
     int a = 3;
     int b = 4;
  
-    sum = a + b;
-    printf(sum);
- 
+    mul = a * b * b; 
     return 0;
 }
