@@ -1,7 +1,7 @@
 /*
 * symtable.c - Identifier를 읽고 HT를 구성
 * contributors: 김중현, 곽서진, 이나현, 김선영
-* date: 31/05/2024
+* date: 05/31/2024
 */
 
 #include "glob.h"
