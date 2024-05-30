@@ -1,10 +1,11 @@
 int main() {
-    int numbers[5] = {1, 2, 3, 4, 5
+    int numbers[5] = {1, 2, 3, 4, 5;
     int sum = 0;
+    int = 1;
     
-    for (int i = 0; i < 5; i++) {
+    while (i < 5) {
         sum += numbers[i];
+        i++;
     }
-    
     return 0;
 }
