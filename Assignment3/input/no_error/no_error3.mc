@@ -1,8 +1,10 @@
-void printHello() {
-    printf("Hello, World!\n");
+void calculate(int x, int y) {
+    sum = x+y;
 }
 
 int main() {
-    printHello();
+    int sum = 0;
+
+    calculate(3, 4);
     return 0;
 }
