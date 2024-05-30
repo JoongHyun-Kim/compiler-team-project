@@ -36,8 +36,8 @@ int sameid; // 같은 식별자의 첫 인덱스
 
 bool found;  // identifier의 이전 등장 여부
 
-int yyleng;
-char* yytext;
+int yyleng;  // yytext 길이
+char* yytext; // scanner input text
 
 int cLine;	// 줄 번호
 int cErrors; // 에러 개수
