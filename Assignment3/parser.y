@@ -18,12 +18,14 @@ int type_void = 0;
 HTpointer look_id;
 HTpointer look_tmp;
 
+ERRORtypes error;
+
 extern yylex();
-extern printError();
+extern ReportError();
 extern yyerror(s);
 %}
 
-%token TERROR TIDENT TNUMBER TFLOAT TCONST TELSE TIF TINT TRETURN TVOID TWHILE
+%token TERROR TIDENT TNUMBER TRNUMBER TFLOAT TCONST TELSE TIF TINT TRETURN TVOID TWHILE
 %token TADDASSIGN TSUBASSIGN TMULASSIGN TDIVASSIGN TMODASSIGN
 %token TOR TAND TEQUAL TNOTEQU TGREAT TLESS TGREATE TLESSE TINC TDEC
 %token TADD TSUB TMUL TDIV TMOD TNOT TASSIGN TCOMMA TSEMICOLON 
@@ -34,7 +36,7 @@ extern yyerror(s);
 mini_c			: translation_unit
 			;
                     
-translation_unit		: external_dcl		
+translation_unit	: external_dcl		
 			| translation_unit external_dcl
 			;
 		            
@@ -44,7 +46,8 @@ external_dcl		: function_def
 			| TIDENT error
 			{
 				yyerrok;
-				printError(wrong_st);  /* error - wrong statement */
+				error = wrong_st;
+				ReportError(error);  /* error - wrong statement */
 			}
 			;
 		            
@@ -56,17 +59,16 @@ function_def		: function_header compound_st
 				/* identifier about parse error */
 				look_tmp->type = 0;
 				yyerrok;
+				error = wrong_funcdef;
 				/* error - wrong function definition */
-				printError(wrong_funcdef);
+				ReportError(error);
 			}
 			;
                     
 function_header	    	: dcl_spec function_name formal_param
 			;
                     
-dcl_spec			: dcl_specifiers
-			{printf("spce");
-			}
+dcl_spec		: dcl_specifiers
 			;
                     
 dcl_specifiers		: dcl_specifier	
@@ -86,7 +88,7 @@ type_specifier		: TINT {type_int=1;}  /* type : integer */
                     
 function_name		: TIDENT
 			{
-				printf("func name");
+				// hash table management call하기
 				/* identifier about parse error or not defined identifier/function */
 				if(look_id->type == 0 || look_id->type == 5) {
 					look_id->type = 4;      /* function name */
@@ -100,16 +102,15 @@ function_name		: TIDENT
 formal_param		: TLEFTPARENTHESIS opt_formal_param TRIGHTPARENTHESIS
 			;
                     
-opt_formal_param		: formal_param_list
+opt_formal_param	: formal_param_list
 			|
 			;
 
-formal_param_list		: param_dcl	
+formal_param_list	: param_dcl	
 			| formal_param_list TCOMMA param_dcl
 
 param_dcl		: dcl_spec declarator
 			{
-				printf("param_dcl");
 				look_id -> type = type_int ? 1 : type_void ? 2 : 0;
 				type_int = 0;
 				type_void = 0;
@@ -120,7 +121,7 @@ compound_st		: '{' opt_dcl_list opt_stat_list '}'
 opt_dcl_list		: declaration_list
 			|
 
-declaration_list		: declaration
+declaration_list	: declaration
 			| declaration_list declaration
 
 declaration		: dcl_spec init_dcl_list ';'
@@ -133,7 +134,6 @@ init_declarator		: declarator
 
 declarator		: TIDENT
 			{
-				printf("dcl");
 				if(look_id->type == 0) {
 					look_id->type = type_int == 1 ? 1 : type_void == 1 ? 2 : 0;
 				}
@@ -172,9 +172,9 @@ if_st			: TIF '(' expression ')' statement %prec LOWER_THAN_ELSE
 			| TIF '(' expression ')' statement
 			  TELSE statement
 
-while_st			: TWHILE '(' expression ')' statement
+while_st		: TWHILE '(' expression ')' statement
 
-return_st			: TRETURN opt_expression ';'
+return_st		: TRETURN opt_expression ';'
 
 expression		: assignment_exp
 
@@ -224,17 +224,16 @@ postfix_exp		: primary_exp
 			| postfix_exp TINC
 			| postfix_exp TDEC
 
-opt_actual_param		: actual_param
+opt_actual_param	: actual_param
 			|
 
 actual_param		: actual_param_list
 
-actual_param_list		: assignment_exp
+actual_param_list	: assignment_exp
 			| actual_param_list ',' assignment_exp
 
 primary_exp		: TIDENT
 			{
-				printf("primaryexp");
 				if(look_id -> type == 0) look_id -> type = 4; // 임시로. 아직 타입 지정 안 됨.
 			}
 			| TNUMBER

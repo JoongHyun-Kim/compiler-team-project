@@ -35,27 +35,17 @@ void ReportError(ERRORtypes error) {
 	case overlen: // identifier가 12자 이내가 아닌 경우
 		printf("%d	< Error > => Too long identifier\n", cLine);
 		break;
-	}
-}
-
-void printError(ERRORtypes err)
-{
-	switch (err) {
-	case 0: //wrong_st
+	case wrong_st:
 		printf("%d	< Error > => Wrong Statement\n", cLine);
-		cErrors++;
 		break;
-	case 1: //wrong_funcdef
+	case wrong_funcdef:
 		printf("%d	< Error > => Wrong function definition\n", cLine);
-		cErrors++;
 		break;
-	case 2: //nosemi
+	case nosemi:
 		printf("%d	< Error > => Missing brace\n", cLine);
-		cErrors++;
 		break;
-	case 4: //nobracket
+	case nobracket:
 		printf("%d	< Error > => Missing bracket\n", cLine);
-		cErrors++;
 		break;
 	}
 }

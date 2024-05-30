@@ -2,7 +2,7 @@
 /*
 * scanner.l - MiniC 구문 분석기
 * contributors: 김중현, 곽서진, 이나현, 김선영
-* date: 04/30/2024
+* date: 05/31/2024
 */
 
 #include <stdio.h>
@@ -11,11 +11,13 @@
 #include "glob.h"
 ERRORtypes error = noerror;
 %}
+
 %%
 "const"	return(TCONST);
 "else"	return(TELSE);
 "if" 	return(TIF);
 "int" 	return(TINT);
+"float"	return(TFLOAT);
 "return"	return(TRETURN);
 "void"	return(TVOID);
 "while"	return(TWHILE);
@@ -52,7 +54,7 @@ ERRORtypes error = noerror;
 [A-Za-z_][A-Za-z0-9_]* {
 	if(yyleng > 12) {
 		error = overlen;
-		ReportError(error, yytext);
+		ReportError(error);
 		return(TERROR);
 	}
 	else {
@@ -61,19 +63,19 @@ ERRORtypes error = noerror;
 	}
 }
 
-[0-9]+		return(TNUMBER);
+[1-9][0-9]* return(TNUMBER);
 [0-9]+"."[0-9]+	return(TRNUMBER);
 [0-9]+[A-Za-z0-9]+ {
 	error = illid;
-	ReportError(error, yytext);
+	ReportError(error);
 	return(TERROR);
 }
 "//".*	;
-"\n" 	{ lineNum++; }
+"\n" 	{ cLine++; }
 [ \t]	;
 .	{
 	error = illic;
-	ReportError(error, yytext);
+	ReportError(error);
 	return(TERROR);
 }
 %%
