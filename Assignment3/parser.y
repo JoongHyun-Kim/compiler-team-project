@@ -56,7 +56,7 @@ function_def		: function_header compound_st
 			{
 				/* 에러 발생시 type 수정을 위해 default값 '0' 세팅 */
 				/* identifier about parse error */
-				look_tmp->type = 0;
+				
 				yyerrok;
 				ReportError(wrong_funcdef);	/* error - wrong function definition */
 			}
