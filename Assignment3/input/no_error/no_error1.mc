@@ -1,6 +1,11 @@
 int main() {
-    for(int i = 1; i <= 5; i++) {
-        printf("%d ", i);
+    int i = 0;
+    int a = 3;
+    int b = 5;
+
+    while(i < 5) {
+       a *= b;
+       i++;
     }
     return 0;
 }
