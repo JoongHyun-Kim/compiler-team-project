@@ -6,6 +6,7 @@
 
 #include "glob.h"
 
+ERRORtypes error;
 HTpointer HT[HTsize];
 char ST[STsize];
 int hashcode = 0;
@@ -13,6 +14,40 @@ int sameid = 0;
 bool found = false;
 int nextid = 0;
 int nextfree = 0;
+
+void PrintHStable()
+{
+    HTpointer here;
+    int i, j;
+
+    printf("\n\n\n\n\n[[HASH TABLE]]\n\n");
+    printf("===========================================\n");
+
+    for (i = 0; i < HTsize; i++) {
+        if (HT[i] != NULL) {
+            here = HT[i];
+            do {
+                printf("Hash Code%3d : (", i);
+                for (j = here->index; ST[j] != '\0'; j++) printf("%c", ST[j]);
+                printf(" : ");
+
+                switch (here->type) {
+                case 1: printf("integer scalar variable, line%d)\n", here->line); break;
+                case 2: printf("void scalar variable, line%d)\n", here->line); break;
+                case 3: printf("float scalar variable, line%d)\n", here->line); break;
+                case 4: printf("integer array variable, line%d)\n", here->line); break;
+                case 5: printf("float array variable, line%d)\n", here->line); break;
+                case 6: printf("function, return type=void, line%d)\n", here->line); break;
+                case 7: printf("function, return type=int, line%d)\n", here->line); break;
+                case 8: printf("function, return type=float, line%d)\n", here->line); break;
+                case 10: printf("not defined identifier/function, line%d)\n", here->line); break;
+                }
+                here = here->next;
+            } while (here != NULL);
+        }
+    }
+    printf("===========================================\n");
+}
 
 // Identifier를 읽는 함수
 void ReadID(char* ident) {
@@ -63,13 +98,13 @@ void LookupHS(int nid, int hscode) {
 // 해시 테이블에 identifier를 추가하는 함수
 void ADDHT(int hscode) {
     HTpointer ptr;
-
-    ptr = (HTpointer)malloc(sizeof(ptr)); // 새로운 노드 동적 할당
-    ptr->index = nextid; // 현재 identifier의 인덱스 설정
-    ptr->next = HT[hscode]; // 새 노드의 다음 노드를 현재 해시코드의 첫 번째 노드로 설정
+    ptr = (HTpointer)malloc(sizeof(struct HTentry));
     ptr->type = 0;
+    ptr->next = NULL;
     ptr->line = cLine;
-    HT[hscode] = ptr; // 연결 리스트에 identifier 삽입
+    HT[hscode] = ptr;
+    ptr->index = nextid;
+
     look_id = ptr;
 }
 
@@ -83,5 +118,12 @@ void SymbolTable(char* ident) {
     }
     else { // 해시 테이블에 identifier가 이미 존재하는 경우
         nextfree = nextid; // 인덱스 초기화
+    }
+
+    if (nextfree == STsize) {
+        error = overflow;
+        ReportError(overflow);
+        PrintHStable();
+        exit(1);
     }
 }

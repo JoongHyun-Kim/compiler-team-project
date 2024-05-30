@@ -19,7 +19,7 @@ typedef struct HTentry {
 	int line;	// line num
 } HTentry;
 
-enum errorTypes { noerror, illid, illic, overlen, wrong_st, wrong_funcdef, nosemi, nobrace, nobracket }; // 에러 유형 enum으로 정의
+enum errorTypes { noerror, illid, illic, overlen, overflow, wrong_st, wrong_funcdef, wrong_assign, nosemi, noparen, nobrace, nobracket, nocomma }; // 에러 유형 enum으로 정의
 typedef enum errorTypes ERRORtypes;
 
 HTpointer HT[HTsize];
