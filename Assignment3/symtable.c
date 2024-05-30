@@ -6,48 +6,39 @@
 
 #include "glob.h"
 
-/*
-ERRORtypes error;
-HTpointer HT[HTsize];
-char ST[STsize];
-int hashcode = 0;
-int sameid = 0;
-bool found = false;
-int nextid = 0;
-int nextfree = 0;
-*/
-
-
+// Hash Table을 출력하는 함수
 void PrintHStable()
 {
-    HTpointer here;
+    HTpointer here; // 현재 해시 테이블 항목을 가리키는 포인터
     int i, j;
 
     printf("\n\n\n\n\n[[HASH TABLE]]\n\n");
     printf("===========================================\n");
 
+    // 해시 테이블의 각 버킷을 순회
     for (i = 0; i < HTsize; i++) {
-        if (HT[i] != NULL) {
-            here = HT[i];
+        if (HT[i] != NULL) { // 현재 버킷이 비어 있지 않은 경우
+            here = HT[i]; // 현재 버킷의 첫 번째 항목을 가리킴
             do {
                 printf("Hash Code%3d : (", i);
                 for (j = here->index; ST[j] != '\0'; j++) printf("%c", ST[j]);
                 printf(" : ");
 
+                // 항목의 타입에 따라 적절한 출력
                 switch (here->type) {
-                case 1: printf("integer scalar variable, line%d)\n", here->line); break;
-                case 2: printf("void scalar variable, line%d)\n", here->line); break;
-                case 3: printf("float scalar variable, line%d)\n", here->line); break;
-                case 4: printf("integer array variable, line%d)\n", here->line); break;
-                case 5: printf("float array variable, line%d)\n", here->line); break;
-                case 6: printf("function, return type=void, line%d)\n", here->line); break;
-                case 7: printf("function, return type=int, line%d)\n", here->line); break;
-                case 8: printf("function, return type=float, line%d)\n", here->line); break;
-                case 10: printf("not defined identifier/function, line%d)\n", here->line); break;
-                case 11: printf("integer scalar parameter, line % d)\n", here->line); break;
-                case 12: printf("float scalar paremeter, line%d)\n", here->line); break;
+                case 1: printf("integer scalar variable, line%d)\n", here->line); break; // 정수 스칼라 변수
+                case 2: printf("void scalar variable, line%d)\n", here->line); break; // void 스칼라 변수
+                case 3: printf("float scalar variable, line%d)\n", here->line); break; // float 스칼라 변수
+                case 4: printf("integer array variable, line%d)\n", here->line); break; // 정수 배열 변수
+                case 5: printf("float array variable, line%d)\n", here->line); break; // float 배열 변수
+                case 6: printf("function, return type=void, line%d)\n", here->line); break; // void 반환 타입 함수
+                case 7: printf("function, return type=int, line%d)\n", here->line); break; // int 반환 타입 함수
+                case 8: printf("function, return type=float, line%d)\n", here->line); break; // float 반환 타입 함수
+                case 10: printf("not defined identifier/function, line%d)\n", here->line); break; // 정의되지 않은 식별자/함수
+                case 11: printf("integer scalar parameter, line % d)\n", here->line); break; // 정수 스칼라 매개변수
+                case 12: printf("float scalar paremeter, line%d)\n", here->line); break; // float 스칼라 매개변수
                 }
-                here = here->next;
+                here = here->next; // 다음 항목으로 이동
             } while (here != NULL);
         }
     }
