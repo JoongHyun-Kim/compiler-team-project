@@ -15,7 +15,9 @@
 int type_const = 0;
 int type_int = 0;
 int type_void = 0;
-int parameter = 0;
+int type_float = 0;
+int param_int=0;
+int param_float=0;
 
 extern yylex();
 extern ReportError();
@@ -86,6 +88,10 @@ type_specifier		: TINT
 			{
 				type_void = 1;	/* type : void */
 			}
+			| TFLOAT 
+			{
+				type_float = 1; /* type : float */
+			}
 			;
                     
 function_name		: TIDENT
@@ -96,9 +102,12 @@ function_name		: TIDENT
                               			look_id->type = 4; /* func, void */
                        			} else if(type_int == 1) {
                               			look_id->type = 5; /* func, int */
-                        		}
+                        		} else if(type_float == 1) {
+										look_id->type = 9; /* func, foat */
+								}
                         		type_int = 0;
                         		type_void = 0;
+								type_float = 0;
                         		look_tmp = look_id;
                   		}
 			}
@@ -115,7 +124,23 @@ formal_param_list	: param_dcl
 			| formal_param_list TCOMMA param_dcl
 			;
 
-param_dcl		: dcl_spec declarator
+			/* 파라미터 */
+param_dcl		: dcl_spec declarator 
+				{
+					if(type_int == 1) {
+						param_int = 1;
+						look_id->type = 10; /* integer scalar parameter */
+					}
+					else if(type_float == 1) {
+						param_float = 1;
+						look_id->type = 11; /* float scalar parameter */
+					}
+				  type_int=0;
+                  type_void=0;
+                  type_float=0;
+                  param_int=0;
+                  param_float=0;
+				}
 			;
 
 compound_st		: TLEFTBRACE opt_dcl_list opt_stat_list TRIGHTBRACE
@@ -138,6 +163,7 @@ declaration		: dcl_spec init_dcl_list TSEMICOLON
 			{
 				type_int = 0;
 				type_void = 0;
+				type_float = 0;
 			}
 			| dcl_spec init_dcl_list error
 			{
@@ -145,6 +171,7 @@ declaration		: dcl_spec init_dcl_list TSEMICOLON
 				yyerrok;
 				type_int = 0;
 				type_void = 0;
+				type_float = 0;
 				ReportError(nosemi);
 			}
 			;
@@ -156,6 +183,7 @@ init_dcl_list		: init_declarator
 
 init_declarator		: declarator
 			| declarator TASSIGN TNUMBER
+			| declarator TASSIGN TRNUMBER
 			;
 
 declarator		: TIDENT
@@ -165,6 +193,8 @@ declarator		: TIDENT
 						look_id->type = 1;	/* int scalar var */
 					} else if (type_void == 1) {
 						look_id->type = 2;	/* void scalar var */
+					} else if (type_float == 1) {
+						look_id->type = 7; /* float scalar var */
 					}
 				}
 				look_tmp = look_id;
@@ -174,6 +204,9 @@ declarator		: TIDENT
 				if(look_id->type == 0) {
 					if(type_int == 1) {
 						look_id->type = 3;	/* int array var */
+					}
+					else if (type_float == 1) {
+						look_id->type = 8; 	/* float array var */
 					}
 				}
 				look_tmp = look_id;
@@ -187,6 +220,7 @@ declarator		: TIDENT
 				
 
 opt_number		: TNUMBER
+			| TRNUMBER
 			|
 			;
 
@@ -302,6 +336,7 @@ primary_exp		: TIDENT
 				}
 			}
 			| TNUMBER
+			| TRNUMBER
 			| TLEFTPARENTHESIS expression TRIGHTPARENTHESIS
 			;
 %%

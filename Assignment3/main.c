@@ -34,6 +34,11 @@ void PrintHStable()
                 case 4: printf("function, return type=void, line%d)\n", here->line); break;
                 case 5: printf("function, return type=int, line%d)\n", here->line); break;
                 case 6: printf("not defined identifier/function, line%d)\n", here->line); break;
+                case 7: printf("float scalar variable, line%d)\n", here->line); break;
+                case 8: printf("float array variable, line%d)\n", here->line); break;
+                case 9: printf("function, return type=float, line%d)\n", here->line); break;
+                case 10: printf("integer scalar parameter, line%d)\n", here->line); break;
+                case 11: printf("float scalar parameter, line%d)\n", here->line); break;
                 }
                 here = here->next;
             } while (here != NULL);
