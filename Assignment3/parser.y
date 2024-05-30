@@ -53,10 +53,7 @@ external_dcl		: function_def
 function_def		: function_header compound_st
 			| function_header TSEMICOLON
 			| function_header error   /* 비정상적인 함수 정의 */
-			{
-				/* 에러 발생시 type 수정을 위해 default값 '0' 세팅 */
-				/* identifier about parse error */
-				
+			{				
 				yyerrok;
 				ReportError(wrong_funcdef);	/* error - wrong function definition */
 			}
@@ -85,14 +82,20 @@ type_qualifier		: TCONST
 type_specifier		: TINT
 			{ 
 				type_int = 1;	/* type : integer */
+				type_void = 0;
+				type_float = 0;
 			}
 			| TVOID 
 			{
 				type_void = 1;	/* type : void */
+				type_int = 0;
+				type_float = 0;
 			}
 			| TFLOAT
 			{
 				type_float = 1;	/* type : float */
+				type_void = 0;
+				type_int = 0;
 			}
 			;
                     
@@ -135,11 +138,11 @@ param_dcl		: dcl_spec declarator
 			{
 				if(type_int == 1) {
 					param_int = 1;
-					look_id->type = 10; /* integer scalar parameter */
+					look_id->type = 11; /* integer scalar parameter */
 				}
 				else if(type_float == 1) {
 					param_float = 1;
-					look_id->type = 11; /* float scalar parameter */
+					look_id->type = 12; /* float scalar parameter */
 				}
 				type_int=0;
                   		type_void=0;
