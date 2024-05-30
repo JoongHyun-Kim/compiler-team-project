@@ -15,6 +15,7 @@ bool found = false;
 int nextid = 0;
 int nextfree = 0;
 
+
 void PrintHStable()
 {
     HTpointer here;
@@ -96,7 +97,7 @@ void LookupHS(int nid, int hscode) {
 }
 
 // 해시 테이블에 identifier를 추가하는 함수
-void ADDHT(int hscode) {
+/*void ADDHT(int hscode) {
     HTpointer ptr;
     ptr = (HTpointer)malloc(sizeof(struct HTentry));
     ptr->type = 0;
@@ -105,6 +106,29 @@ void ADDHT(int hscode) {
     HT[hscode] = ptr;
     ptr->index = nextid;
 
+    look_id = ptr;
+}*/
+
+void ADDHT(int hscode)
+{
+    HTpointer ptr;
+
+    if (HT[hscode] == NULL) {
+        ptr = (HTpointer)malloc(sizeof(struct HTentry));
+        ptr->type = 0;
+        ptr->line = cLine;
+        ptr->index = nextid;
+        ptr->next = NULL;
+        HT[hscode] = ptr;
+    }
+    else {
+        ptr = (HTpointer)malloc(sizeof(struct HTentry));
+        ptr->type = 0;
+        ptr->line = cLine;
+        ptr->index = nextid;
+        ptr->next = HT[hscode];
+        HT[hscode] = ptr;
+    }
     look_id = ptr;
 }
 
