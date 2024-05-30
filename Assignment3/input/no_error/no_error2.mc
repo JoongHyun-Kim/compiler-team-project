@@ -1,9 +1,9 @@
-int main() {
+void main() {
     int number = 5;
     if(number > 0) {
-        printf("양수입니다.\n");
+        number++;
     } else {
-        printf("음수 또는 0입니다.\n");
+        number--;
     }
     return 0;
 }
