@@ -216,21 +216,21 @@ static const short yyrhs[] = {    47,
 
 #if YYDEBUG != 0
 static const short yyrline[] = { 0,
-    38,    41,    42,    45,    46,    47,    48,    53,    56,    57,
-    58,    65,    66,    73,    76,    77,    80,    81,    84,    90,
-    96,   102,   110,   130,   133,   134,   141,   142,   145,   146,
-   147,   154,   157,   168,   181,   182,   189,   190,   193,   194,
-   197,   205,   218,   219,   220,   227,   228,   229,   230,   231,
-   238,   239,   242,   263,   282,   301,   306,   310,   311,   314,
-   315,   318,   319,   322,   323,   324,   325,   326,   329,   330,
-   337,   338,   341,   342,   343,   350,   351,   358,   359,   364,
-   371,   374,   375,   376,   381,   382,   387,   388,   393,   394,
-   399,   400,   405,   406,   413,   414,   415,   422,   423,   424,
-   431,   432,   433,   438,   439,   446,   447,   448,   453,   454,
-   459,   460,   465,   466,   473,   474,   475,   480,   481,   488,
-   489,   490,   495,   496,   501,   502,   509,   510,   511,   512,
-   513,   516,   517,   518,   523,   524,   529,   530,   533,   534,
-   537,   540,   541,   544,   551,   552,   553,   554,   559
+    38,    41,    42,    45,    46,    47,    53,    58,    61,    62,
+    63,    70,    71,    78,    81,    82,    85,    86,    89,    95,
+   101,   107,   115,   136,   139,   140,   147,   148,   151,   152,
+   153,   160,   163,   175,   188,   189,   196,   197,   200,   201,
+   204,   212,   225,   226,   227,   234,   235,   236,   237,   238,
+   245,   246,   249,   271,   290,   309,   314,   318,   319,   322,
+   323,   326,   327,   330,   331,   332,   333,   334,   337,   338,
+   345,   346,   349,   350,   351,   358,   359,   366,   367,   372,
+   379,   382,   383,   384,   389,   390,   395,   396,   401,   402,
+   407,   408,   413,   414,   421,   422,   423,   430,   431,   432,
+   439,   440,   441,   446,   447,   454,   455,   456,   461,   462,
+   467,   468,   473,   474,   481,   482,   483,   488,   489,   496,
+   497,   498,   503,   504,   509,   510,   517,   518,   519,   520,
+   521,   524,   525,   526,   531,   532,   537,   538,   541,   542,
+   545,   548,   549,   552,   559,   560,   561,   562,   567
 };
 
 static const char * const yytname[] = {   "$","error","$undefined.","TERROR",
@@ -963,35 +963,43 @@ yyreduce:
 
   switch (yyn) {
 
+case 6:
+#line 48 "parser.y"
+{
+				if(look_id->type == 0) {
+					look_id->type = 10;	/* not defined */
+				}
+			;
+    break;}
 case 7:
-#line 49 "parser.y"
+#line 54 "parser.y"
 {
 				yyerrok;
 				ReportError(wrong_st);
 			;
     break;}
 case 11:
-#line 59 "parser.y"
+#line 64 "parser.y"
 {
 				yyerrok;
 				ReportError(wrong_funcdef);	/* error - wrong function definition */
 			;
     break;}
 case 13:
-#line 67 "parser.y"
+#line 72 "parser.y"
 {
 				yyerrok;
 				ReportError(wrong_funcdef);
 			;
     break;}
 case 19:
-#line 85 "parser.y"
+#line 90 "parser.y"
 {
 				type_const = 1;    /* type : const */
 			;
     break;}
 case 20:
-#line 91 "parser.y"
+#line 96 "parser.y"
 { 
 				type_int = 1;	/* type : integer */
 				type_void = 0;
@@ -999,7 +1007,7 @@ case 20:
 			;
     break;}
 case 21:
-#line 97 "parser.y"
+#line 102 "parser.y"
 {
 				type_void = 1;	/* type : void */
 				type_int = 0;
@@ -1007,7 +1015,7 @@ case 21:
 			;
     break;}
 case 22:
-#line 103 "parser.y"
+#line 108 "parser.y"
 {
 				type_float = 1;	/* type : float */
 				type_void = 0;
@@ -1015,9 +1023,10 @@ case 22:
 			;
     break;}
 case 23:
-#line 111 "parser.y"
+#line 116 "parser.y"
 {
-				if(look_id->type == 0 || look_id->type == 10) {
+				if(look_id->type == 0) {
+					look_id->type = 10;	/* not defined */
 					if(type_void == 1) {
                               			look_id->type = 6; /* func, void */
                        			} else if(type_int == 1) {
@@ -1037,23 +1046,24 @@ case 23:
 			;
     break;}
 case 26:
-#line 135 "parser.y"
+#line 141 "parser.y"
 {
 				yyerrok;
 				ReportError(noparen);
 			;
     break;}
 case 31:
-#line 148 "parser.y"
+#line 154 "parser.y"
 {
 				yyerrok;
 				ReportError(nocomma);
 			;
     break;}
 case 33:
-#line 158 "parser.y"
+#line 164 "parser.y"
 {
 				if(look_id->type == 0){
+					look_id->type = 10;	/* not defined */
 					if(type_int == 1) {
 						look_id->type = 11;	/* integer scalar param */
 					} else if(type_float == 1) {
@@ -1064,7 +1074,7 @@ case 33:
 			;
     break;}
 case 34:
-#line 169 "parser.y"
+#line 176 "parser.y"
 {
 				if(look_id->type == 0){
 					if(type_int == 1) {
@@ -1077,14 +1087,14 @@ case 34:
 			;
     break;}
 case 36:
-#line 183 "parser.y"
+#line 190 "parser.y"
 {
 				yyerrok;
 				ReportError(nobrace);
 			;
     break;}
 case 41:
-#line 198 "parser.y"
+#line 205 "parser.y"
 {
 				type_int = 0;
 				type_void = 0;
@@ -1094,7 +1104,7 @@ case 41:
 			;
     break;}
 case 42:
-#line 206 "parser.y"
+#line 213 "parser.y"
 {
 				yyerrok;
 				type_int = 0;
@@ -1106,23 +1116,24 @@ case 42:
 			;
     break;}
 case 45:
-#line 221 "parser.y"
+#line 228 "parser.y"
 {
 				yyerrok;
 				ReportError(nocomma);
 			;
     break;}
 case 50:
-#line 232 "parser.y"
+#line 239 "parser.y"
 {
 				yyerrok;
 				ReportError(nobrace);
 			;
     break;}
 case 53:
-#line 243 "parser.y"
+#line 250 "parser.y"
 {
 				if(look_id->type == 0){
+					look_id->type = 10;	/* not defined */
 					if(type_const == 0) {
 						if(type_int == 1) {
 							look_id->type = 1;	/* int scalar var */
@@ -1143,7 +1154,7 @@ case 53:
 			;
     break;}
 case 54:
-#line 264 "parser.y"
+#line 272 "parser.y"
 {
 				if(look_id->type == 0){
 					if(type_const == 0) {
@@ -1164,7 +1175,7 @@ case 54:
 			;
     break;}
 case 55:
-#line 283 "parser.y"
+#line 291 "parser.y"
 {
 				if(look_id->type == 0){
 					if(type_const == 0) {
@@ -1185,196 +1196,196 @@ case 55:
 			;
     break;}
 case 56:
-#line 302 "parser.y"
+#line 310 "parser.y"
 {
 				yyerrok;
 				ReportError(nobracket);
 			;
     break;}
 case 70:
-#line 331 "parser.y"
+#line 339 "parser.y"
 {
 				yyerrok;
 				ReportError(nosemi);
 			;
     break;}
 case 75:
-#line 344 "parser.y"
-{
-				yyerrok;
-				ReportError(noparen);
-			;
-    break;}
-case 77:
 #line 352 "parser.y"
 {
 				yyerrok;
 				ReportError(noparen);
 			;
     break;}
-case 79:
+case 77:
 #line 360 "parser.y"
+{
+				yyerrok;
+				ReportError(noparen);
+			;
+    break;}
+case 79:
+#line 368 "parser.y"
 {
 				yyerrok;
 				ReportError(nosemi);
 			;
     break;}
 case 80:
-#line 365 "parser.y"
+#line 373 "parser.y"
 {
 				yyerrok;
 				ReportError(wrong_st);
 			;
     break;}
 case 84:
-#line 377 "parser.y"
+#line 385 "parser.y"
 {
 				yyerrok;
 				ReportError(wrong_assign);
 			;
     break;}
 case 86:
-#line 383 "parser.y"
+#line 391 "parser.y"
 {
 				yyerrok;
 				ReportError(wrong_assign);
 			;
     break;}
 case 88:
-#line 389 "parser.y"
+#line 397 "parser.y"
 {
 				yyerrok;
 				ReportError(wrong_assign);
 			;
     break;}
 case 90:
-#line 395 "parser.y"
+#line 403 "parser.y"
 {
 				yyerrok;
 				ReportError(wrong_assign);
 			;
     break;}
 case 92:
-#line 401 "parser.y"
+#line 409 "parser.y"
 {
 				yyerrok;
 				ReportError(wrong_assign);
 			;
     break;}
 case 94:
-#line 407 "parser.y"
+#line 415 "parser.y"
 {
 				yyerrok;
 				ReportError(wrong_assign);
 			;
     break;}
 case 97:
-#line 416 "parser.y"
+#line 424 "parser.y"
 {
 				yyerrok;
 				ReportError(nooperand);
 			;
     break;}
 case 100:
-#line 425 "parser.y"
+#line 433 "parser.y"
 {
 				yyerrok;
 				ReportError(nooperand);
 			;
     break;}
 case 103:
-#line 434 "parser.y"
+#line 442 "parser.y"
 {
 				yyerrok;
 				ReportError(nooperand);
 			;
     break;}
 case 105:
-#line 440 "parser.y"
+#line 448 "parser.y"
 {
 				yyerrok;
 				ReportError(nooperand);
 			;
     break;}
 case 108:
-#line 449 "parser.y"
+#line 457 "parser.y"
 {
 				yyerrok;
 				ReportError(nooperand);
 			;
     break;}
 case 110:
-#line 455 "parser.y"
+#line 463 "parser.y"
 {
 				yyerrok;
 				ReportError(nooperand);
 			;
     break;}
 case 112:
-#line 461 "parser.y"
+#line 469 "parser.y"
 {
 				yyerrok;
 				ReportError(nooperand);
 			;
     break;}
 case 114:
-#line 467 "parser.y"
+#line 475 "parser.y"
 {
 				yyerrok;
 				ReportError(nooperand);
 			;
     break;}
 case 117:
-#line 476 "parser.y"
+#line 484 "parser.y"
 {
 				yyerrok;
 				ReportError(nooperand);
 			;
     break;}
 case 119:
-#line 482 "parser.y"
+#line 490 "parser.y"
 {
 				yyerrok;
 				ReportError(nooperand);
 			;
     break;}
 case 122:
-#line 491 "parser.y"
+#line 499 "parser.y"
 {
 				yyerrok;
 				ReportError(nooperand);
 			;
     break;}
 case 124:
-#line 497 "parser.y"
+#line 505 "parser.y"
 {
 				yyerrok;
 				ReportError(nooperand);
 			;
     break;}
 case 126:
-#line 503 "parser.y"
+#line 511 "parser.y"
 {
 				yyerrok;
 				ReportError(nooperand);
 			;
     break;}
 case 134:
-#line 519 "parser.y"
+#line 527 "parser.y"
 {
 				yyerrok;
 				ReportError(nobracket);
 			;
     break;}
 case 136:
-#line 525 "parser.y"
+#line 533 "parser.y"
 {
 				yyerrok;
 				ReportError(noparen);
 			;
     break;}
 case 144:
-#line 545 "parser.y"
+#line 553 "parser.y"
 {
 				/* identifeir가 정의되지 않은 경우를 처리 */
 				if(look_id->type == 0) {
@@ -1383,7 +1394,7 @@ case 144:
 			;
     break;}
 case 148:
-#line 555 "parser.y"
+#line 563 "parser.y"
 {
 				yyerrok;
 				ReportError(noparen);
@@ -1587,4 +1598,4 @@ yyerrhandle:
   yystate = yyn;
   goto yynewstate;
 }
-#line 561 "parser.y"
+#line 569 "parser.y"

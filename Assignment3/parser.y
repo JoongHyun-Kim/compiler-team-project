@@ -45,6 +45,11 @@ translation_unit	: external_dcl
 external_dcl		: function_def	
 			| declaration
 			| TIDENT TSEMICOLON /* identifier와 세미콜론을 처리 */
+			{
+				if(look_id->type == 0) {
+					look_id->type = 10;	/* not defined */
+				}
+			}
 			| TIDENT error /* 식별자와 그 뒤에 오류가 있는 경우를 처리 */
 			{
 				yyerrok;
@@ -109,7 +114,8 @@ type_specifier		: TINT
                     
 function_name		: TIDENT
 			{
-				if(look_id->type == 0 || look_id->type == 10) {
+				if(look_id->type == 0) {
+					look_id->type = 10;	/* not defined */
 					if(type_void == 1) {
                               			look_id->type = 6; /* func, void */
                        			} else if(type_int == 1) {
@@ -157,6 +163,7 @@ param_dcl		: dcl_spec param_declarator
 param_declarator	: TIDENT /*  매개변수 declarator를 처리하는 부분*/
 			{
 				if(look_id->type == 0){
+					look_id->type = 10;	/* not defined */
 					if(type_int == 1) {
 						look_id->type = 11;	/* integer scalar param */
 					} else if(type_float == 1) {
@@ -242,6 +249,7 @@ init_list		: TNUMBER /*  숫자로 초기화된 변수 값을 처리 */
 declarator		: TIDENT
 			{
 				if(look_id->type == 0){
+					look_id->type = 10;	/* not defined */
 					if(type_const == 0) {
 						if(type_int == 1) {
 							look_id->type = 1;	/* int scalar var */
