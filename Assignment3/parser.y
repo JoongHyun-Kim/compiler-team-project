@@ -445,25 +445,25 @@ equality_exp		: relational_exp
 
 relational_exp		: additive_exp
 			| relational_exp TGREAT additive_exp
-			| relational_exp TGREAT error
+			| relational_exp TGREAT error /* 비교 연산자 뒤에 피연산자가 없을 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(nooperand);
 			}
 			| relational_exp TLESS additive_exp
-			| relational_exp TLESS error
+			| relational_exp TLESS error /* 비교 연산자 뒤에 피연산자가 없을 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(nooperand);
 			}
 			| relational_exp TGREATE additive_exp
-			| relational_exp TGREATE error
+			| relational_exp TGREATE error /* 비교 연산자 뒤에 피연산자가 없을 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(nooperand);
 			}
 			| relational_exp TLESSE additive_exp
-			| relational_exp TLESSE error
+			| relational_exp TLESSE error /* 비교 연산자 뒤에 피연산자가 없을 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(nooperand);
@@ -472,13 +472,13 @@ relational_exp		: additive_exp
 
 additive_exp		: multiplicative_exp
 			| additive_exp TADD multiplicative_exp
-			| additive_exp TADD error
+			| additive_exp TADD error /* 연산자 뒤에 피연산자가 없을 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(nooperand);
 			}
 			| additive_exp TSUB multiplicative_exp
-			| additive_exp TSUB error
+			| additive_exp TSUB error /* 연산자 뒤에 피연산자가 없을 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(nooperand);
@@ -487,19 +487,19 @@ additive_exp		: multiplicative_exp
 
 multiplicative_exp	: unary_exp
 			| multiplicative_exp TMUL unary_exp
-			| multiplicative_exp TMUL error
+			| multiplicative_exp TMUL error /* 연산자 뒤에 피연산자가 없을 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(nooperand);
 			}
 			| multiplicative_exp TDIV unary_exp
-			| multiplicative_exp TDIV error
+			| multiplicative_exp TDIV error /* 연산자 뒤에 피연산자가 없을 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(nooperand);
 			}
 			| multiplicative_exp TMOD unary_exp
-			| multiplicative_exp TMOD error
+			| multiplicative_exp TMOD error /* 연산자 뒤에 피연산자가 없을 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(nooperand);
