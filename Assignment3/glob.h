@@ -1,7 +1,7 @@
 /*
 * glob.h - 프로그램에 사용된 global variable 정의
 * contributors: 김중현, 곽서진, 이나현, 김선영
-* date: 05/31/2024
+* date: 31/05/2024
 */
 
 #include <stdlib.h>
@@ -19,7 +19,7 @@ typedef struct HTentry {
 	int line;	// line num
 } HTentry;
 
-enum errorTypes { noerror, illid, illic, overlen, overflow, wrong_st, wrong_funcdef, wrong_assign, nosemi, noparen, nobrace, nobracket, nocomma }; // 에러 유형 enum으로 정의
+enum errorTypes { noerror, illid, illic, overlen, overflow, wrong_st, wrong_funcdef, wrong_assign, nooperand, nosemi, noparen, nobrace, nobracket, nocomma }; // 에러 유형 enum으로 정의
 typedef enum errorTypes ERRORtypes;
 ERRORtypes error;
 

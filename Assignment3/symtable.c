@@ -1,7 +1,7 @@
 /*
 * symtable.c - Identifier를 읽고 HT를 구성
 * contributors: 김중현, 곽서진, 이나현, 김선영
-* date: 05/31/2024
+* date: 31/05/2024
 */
 
 #include "glob.h"
@@ -27,18 +27,24 @@ void PrintHStable()
                 // 항목의 타입에 따라 적절한 출력
                 switch (here->type) {
                 case 1: printf("integer scalar variable, line%d)\n", here->line); break; // 정수 스칼라 변수
-                case 2: printf("void scalar variable, line%d)\n", here->line); break; // void 스칼라 변수
-                case 3: printf("float scalar variable, line%d)\n", here->line); break; // float 스칼라 변수
+                case 2: printf("void scalar variable, line%d)\n", here->line); break;   // void 스칼라 변수
+                case 3: printf("float scalar variable, line%d)\n", here->line); break;  // float 스칼라 변수
                 case 4: printf("integer array variable, line%d)\n", here->line); break; // 정수 배열 변수
-                case 5: printf("float array variable, line%d)\n", here->line); break; // float 배열 변수
-                case 6: printf("function, return type=void, line%d)\n", here->line); break; // void 반환 타입 함수
-                case 7: printf("function, return type=int, line%d)\n", here->line); break; // int 반환 타입 함수
-                case 8: printf("function, return type=float, line%d)\n", here->line); break; // float 반환 타입 함수
-                case 10: printf("not defined identifier/function, line%d)\n", here->line); break; // 정의되지 않은 식별자/함수
-                case 11: printf("integer scalar parameter, line % d)\n", here->line); break; // 정수 스칼라 매개변수
-                case 12: printf("float scalar paremeter, line%d)\n", here->line); break; // float 스칼라 매개변수
+                case 5: printf("float array variable, line%d)\n", here->line); break;   // float 배열 변수
+                case 6: printf("function, return type=void, line%d)\n", here->line); break; // void 반환 함수
+                case 7: printf("function, return type=int, line%d)\n", here->line); break;  // 정수 반환 함수
+                case 8: printf("function, return type=float, line%d)\n", here->line); break;    // 정수 반환 함수
+                case 10: printf("not defined identifier/function, line%d)\n", here->line); break;   // 정의되지 않은 식별자/함수
+                case 11: printf("integer scalar parameter, line % d)\n", here->line); break;    // 정수 스칼라 인수
+                case 12: printf("float scalar paremeter, line%d)\n", here->line); break;    // float 스칼라 인수
+                case 13: printf("integer array parameter, line % d)\n", here->line); break; // 정수 배열 인수
+                case 14: printf("float array parameter, line%d)\n", here->line); break; // float 배열 인수
+                case 15: printf("integer array constant, line % d)\n", here->line); break;  // 정수 배열 상수
+                case 16: printf("float array constant, line%d)\n", here->line); break;  // float 배열 상수
+                case 17: printf("integer scalar constant, line % d)\n", here->line); break; // 정수 스칼라 상수
+                case 18: printf("float scalar constant, line%d)\n", here->line); break; // float 스칼라 상수
                 }
-                here = here->next; // 다음 항목으로 이동
+                here = here->next;  // 다음 항목으로 이동
             } while (here != NULL);
         }
     }

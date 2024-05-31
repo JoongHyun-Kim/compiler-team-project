@@ -62,5 +62,8 @@ void ReportError(ERRORtypes error) {
     case nobrace: // 중괄호가 누락된 경우
         printf("%d\tError => Missing brace\n", cLine);
         break;
+    case nooperand: // 피연산자가 누락된 경우
+        printf("%d\tError => Missing operand\n", cLine);
+        break;
     }
 }

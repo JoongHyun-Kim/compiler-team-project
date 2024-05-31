@@ -16,12 +16,12 @@ int type_const = 0;
 int type_int = 0;
 int type_void = 0;
 int type_float = 0;
-int param_int = 0;
-int param_float = 0;
+int type_param = 0;
 
 extern yylex();
 extern ReportError();
 extern yyerror(s);
+extern char *yytext;
 %}
 
 %token TERROR TIDENT TNUMBER TRNUMBER TFLOAT TCONST TELSE TIF TINT TRETURN TVOID TWHILE
@@ -43,14 +43,14 @@ translation_unit	: external_dcl
 			;
 		            
 external_dcl		: function_def	
-			| declaration	
-			| TIDENT TSEMICOLON /* identifier와 세미콜론을 처리한다. */
-			| TIDENT error /* 식별자와 그 뒤에 오류가 있는 경우를 처리 */
+			| declaration
+			| TIDENT TSEMICOLON
+			| TIDENT error
 			{
 				yyerrok;
 				ReportError(wrong_st);
 			}
-			| TERROR /* 일반적인 구문 오류 처리 */
+			| TERROR	/* 일반적인 구문 에러 */
 			;
 		            
 function_def		: function_header compound_st
@@ -151,21 +151,30 @@ formal_param_list	: param_dcl
 			}
 			;
 
-param_dcl		: dcl_spec declarator
+param_dcl		: dcl_spec param_declarator
+			;
+
+param_declarator	: TIDENT
 			{
-				if(type_int == 1) {
-					param_int = 1;
-					look_id->type = 11; /* integer scalar parameter */
+				if(look_id->type == 0){
+					if(type_int == 1) {
+						look_id->type = 11;	/* integer scalar param */
+					} else if(type_float == 1) {
+						look_id->type = 12;	/* float scalar param */
+					}
 				}
-				else if(type_float == 1) {
-					param_float = 1;
-					look_id->type = 12; /* float scalar parameter */
+				look_tmp = look_id;
+			}
+			| TIDENT TLEFTBRACKET TRIGHTBRACKET
+			{
+				if(look_id->type == 0){
+					if(type_int == 1) {
+						look_id->type = 13;	/* integer array param */
+					} else if(type_float == 1) {
+						look_id->type = 14;	/* float array param */
+					}
 				}
-				type_int=0;
-                  		type_void=0;
-                  		type_float=0;
-                  		param_int=0;
-                  		param_float=0;
+				look_tmp = look_id;
 			}
 			;
 
@@ -191,6 +200,7 @@ declaration		: dcl_spec init_dcl_list TSEMICOLON
 				type_void = 0;
 				type_float = 0;
 				type_const = 0;
+				type_param = 0;
 			}
 			| dcl_spec init_dcl_list error /* 올바르지 않은 형식의 선언을 처리. 오류가 있는 경우를 포함하며, 세미콜론으로 끝나지 않는 경우를 다룸 */
 			{
@@ -199,6 +209,7 @@ declaration		: dcl_spec init_dcl_list TSEMICOLON
 				type_void = 0;
 				type_float = 0;
 				type_const = 0;
+				type_param = 0;
 				ReportError(nosemi);
 			}
 			;
@@ -230,24 +241,59 @@ init_list		: TNUMBER /*  숫자로 초기화된 변수 값을 처리 */
 
 declarator		: TIDENT
 			{
-				if(look_id->type == 0) {
-					if(type_int == 1) {
-						look_id->type = 1;	/* int scalar var */
-					} else if (type_void == 1) {
-						look_id->type = 2;	/* void scalar var */
-					} else if (type_float == 1) {
-						look_id->type = 3;	/* float scalar var */
+				if(look_id->type == 0){
+					if(type_const == 0) {
+						if(type_int == 1) {
+							look_id->type = 1;	/* int scalar var */
+						} else if(type_void == 1) {
+							look_id->type = 2;	/* void scalar var */
+						} else if(type_float == 1) {
+							look_id->type = 3;	/* float scalar var */
+						}
+					} else if(type_const == 1) {
+						if(type_int == 1) {
+							look_id->type = 17;	/* integer scalar constant */
+						} else if(type_float == 1) {
+							look_id->type = 18;	/* float scalar constant */
+						}
 					}
 				}
 				look_tmp = look_id;
 			}
 			| TIDENT TLEFTBRACKET opt_number TRIGHTBRACKET
 			{
-				if(look_id->type == 0) {
-					if(type_int == 1) {
-						look_id->type = 4;	/* int array var */
-					} else if(type_float == 1) {
-						look_id->type = 5;	/* float array var */
+				if(look_id->type == 0){
+					if(type_const == 0) {
+						if(type_int == 1) {
+							look_id->type = 4;	/* integer array var */
+						} else if(type_float == 1) {
+							look_id->type = 5;	/* float array var*/
+						}
+					} else if(type_const == 1) {
+						if(type_int == 1) {
+							look_id->type = 15;	/* integer array constant */
+						} else if(type_float == 1) {
+							look_id->type = 16;	/* float array constant */
+						}
+					}
+				}
+				look_tmp = look_id;
+			}
+			| TIDENT TLEFTBRACKET TRIGHTBRACKET
+			{
+				if(look_id->type == 0){
+					if(type_const == 0) {
+						if(type_int == 1) {
+							look_id->type = 4;	/* integer array var */
+						} else if(type_float == 1) {
+							look_id->type = 5;	/* float array var*/
+						}
+					} else if(type_const == 1) {
+						if(type_int == 1) {
+							look_id->type = 15;	/* integer array constant */
+						} else if(type_float == 1) {
+							look_id->type = 16;	/* float array constant */
+						}
 					}
 				}
 				look_tmp = look_id;
@@ -326,37 +372,37 @@ expression		: assignment_exp
 			;
 
 assignment_exp		: logical_or_exp
-			| unary_exp TASSIGN assignment_exp
-			| unary_exp TADDASSIGN assignment_exp
-			| unary_exp TSUBASSIGN assignment_exp
-			| unary_exp TMULASSIGN assignment_exp
-			| unary_exp TDIVASSIGN assignment_exp	
-			| unary_exp TMODASSIGN assignment_exp
+			| unary_exp TASSIGN assignment_exp	
 			| unary_exp TASSIGN error /* '='에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_assign);
 			}
+			| unary_exp TADDASSIGN assignment_exp
 			| unary_exp TADDASSIGN error /* '+='에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_assign);
 			}
+			| unary_exp TSUBASSIGN assignment_exp
 			| unary_exp TSUBASSIGN error /* '-='에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_assign);
 			}
+			| unary_exp TMULASSIGN assignment_exp
 			| unary_exp TMULASSIGN error  /* '*='에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_assign);
 			}
+			| unary_exp TDIVASSIGN assignment_exp
 			| unary_exp TDIVASSIGN error  /* '/='에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_assign);
 			}
+			| unary_exp TMODASSIGN assignment_exp
 			| unary_exp TMODASSIGN error  /* '%='에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
@@ -369,7 +415,7 @@ logical_or_exp		: logical_and_exp
 			| logical_or_exp TOR error /*  논리 또는 표현식에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
-				ReportError(wrong_st);
+				ReportError(nooperand);
 			}
 			;
 
@@ -378,41 +424,86 @@ logical_and_exp		: equality_exp
 			| logical_and_exp TAND error /* 논리 곱 표현식에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
-				ReportError(wrong_st);
+				ReportError(nooperand);
 			}
 			;
 
 equality_exp		: relational_exp
 			| equality_exp TEQUAL relational_exp
-			| equality_exp TNOTEQU relational_exp
 			| equality_exp TEQUAL error   /* 동등성 표현식에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
-				ReportError(wrong_st);
+				ReportError(nooperand);
 			}
+			| equality_exp TNOTEQU relational_exp
 			| equality_exp TNOTEQU error /* 부등성 표현식에서 오류가 발생한 경우를 처리 */
 			{
 				yyerrok;
-				ReportError(wrong_st);
+				ReportError(nooperand);
 			}
 			;
 
 relational_exp		: additive_exp
 			| relational_exp TGREAT additive_exp
+			| relational_exp TGREAT error
+			{
+				yyerrok;
+				ReportError(nooperand);
+			}
 			| relational_exp TLESS additive_exp
+			| relational_exp TLESS error
+			{
+				yyerrok;
+				ReportError(nooperand);
+			}
 			| relational_exp TGREATE additive_exp
+			| relational_exp TGREATE error
+			{
+				yyerrok;
+				ReportError(nooperand);
+			}
 			| relational_exp TLESSE additive_exp
+			| relational_exp TLESSE error
+			{
+				yyerrok;
+				ReportError(nooperand);
+			}
 			;
 
 additive_exp		: multiplicative_exp
 			| additive_exp TADD multiplicative_exp
+			| additive_exp TADD error
+			{
+				yyerrok;
+				ReportError(nooperand);
+			}
 			| additive_exp TSUB multiplicative_exp
+			| additive_exp TSUB error
+			{
+				yyerrok;
+				ReportError(nooperand);
+			}
 			;
 
 multiplicative_exp	: unary_exp
 			| multiplicative_exp TMUL unary_exp
+			| multiplicative_exp TMUL error
+			{
+				yyerrok;
+				ReportError(nooperand);
+			}
 			| multiplicative_exp TDIV unary_exp
+			| multiplicative_exp TDIV error
+			{
+				yyerrok;
+				ReportError(nooperand);
+			}
 			| multiplicative_exp TMOD unary_exp
+			| multiplicative_exp TMOD error
+			{
+				yyerrok;
+				ReportError(nooperand);
+			}
 			;
 
 unary_exp		: postfix_exp
@@ -430,7 +521,7 @@ postfix_exp		: primary_exp
 				ReportError(nobracket);
 			}
 			| postfix_exp TLEFTPARENTHESIS opt_actual_param TRIGHTPARENTHESIS
-			| postfix_exp TLEFTPARENTHESIS expression error /*   함수 호출에서 오류가 발생한 경우를 처리*/
+			| postfix_exp TLEFTPARENTHESIS opt_actual_param error /*   함수 호출에서 오류가 발생한 경우를 처리*/
 			{
 				yyerrok;
 				ReportError(noparen);
