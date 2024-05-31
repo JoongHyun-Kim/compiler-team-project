@@ -44,8 +44,8 @@ translation_unit	: external_dcl
 		            
 external_dcl		: function_def	
 			| declaration
-			| TIDENT TSEMICOLON
-			| TIDENT error
+			| TIDENT TSEMICOLON /* identifier와 세미콜론을 처리 */
+			| TIDENT error /* 식별자와 그 뒤에 오류가 있는 경우를 처리 */
 			{
 				yyerrok;
 				ReportError(wrong_st);
@@ -154,7 +154,7 @@ formal_param_list	: param_dcl
 param_dcl		: dcl_spec param_declarator
 			;
 
-param_declarator	: TIDENT
+param_declarator	: TIDENT /*  매개변수 declarator를 처리하는 부분*/
 			{
 				if(look_id->type == 0){
 					if(type_int == 1) {
